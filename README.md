@@ -120,10 +120,10 @@ Please, read a **[COLLAB.md](https://github.com/codexjr-dev/dashboard-codex-api/
 
 ## 📌 Versions
 
-- [1.0.0](https://github.com/lucasanthony/tcc-backend) - [Completion of Course Work - Lucas Anthony](http://dspace.sti.ufcg.edu.br:8080/xmlui/bitstream/handle/riufcg/29267/LUCAS%20ANTHONY%20FERREIRA%20DE%20OLIVEIRA%20-%20TCC%20ARTIGO%20CI%C3%8ANCIA%20DA%20COMPUTA%C3%87%C3%83O%20CEEI%202022.pdf?sequence=1&isAllowed=y).
-- [1.2.1](https://github.com/codexjr-dev/dashboard-codex-api/tree/6300cc4e1b9cf42b05ccc3ead418e30dae10e218) - [User Model Updates and role of user format changed](https://github.com/codexjr-dev/dashboard-codex-api/pull/17).
-- [1.2.2](https://github.com/codexjr-dev/dashboard-codex-api/tree/821a75765695012046d16f6540d6c177e31674ce) - [nodeenv configs, member access, role and email verifications and new roles](https://github.com/codexjr-dev/dashboard-codex-api/pull/27).
-- [1.2.3](https://github.com/codexjr-dev/dashboard-codex-api/tree/b8a880204d038336145321c9e7436bc1a847a22e) - [Bug Fixes and System Improvements](https://github.com/codexjr-dev/dashboard-codex-api/pull/57).
+- [1.0.0](https://github.com/lucasanthony/tcc-frontend) - [Completion of Course Work - Lucas Anthony](http://dspace.sti.ufcg.edu.br:8080/xmlui/bitstream/handle/riufcg/29267/LUCAS%20ANTHONY%20FERREIRA%20DE%20OLIVEIRA%20-%20TCC%20ARTIGO%20CI%C3%8ANCIA%20DA%20COMPUTA%C3%87%C3%83O%20CEEI%202022.pdf?sequence=1&isAllowed=y).
+- [1.2.1](https://github.com/codexjr-dev/dashboard-codex-web/tree/2dce5a8514f3e40d22ab6b2258e13b9c3be90bae) - [Visual identity improvements, correction in confirm password, logoff button added, input hiding in "Enter Password" fields and new roles to "Add User" page.](https://github.com/codexjr-dev/dashboard-codex-web/pull/24).
+- [1.2.2](https://github.com/codexjr-dev/dashboard-codex-web/tree/240017003666675188a98c95538c1c9b0796a4de) - [console.log removed, role verifications updates, access to members and new roles to user.](https://github.com/codexjr-dev/dashboard-codex-web/pull/38).
+- [1.2.3](https://github.com/codexjr-dev/dashboard-codex-web/tree/1566154a0df4c308f7fc83014f06507c3656b7c7) - [Bug Fixes, System Improvements and Visual Improvements.](https://github.com/codexjr-dev/dashboard-codex-web/pull/80).
 
 ## ✒️ Authors
 
