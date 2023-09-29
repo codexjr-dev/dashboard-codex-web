@@ -124,6 +124,7 @@ Please, read a **[COLLAB.md](https://github.com/codexjr-dev/dashboard-codex-api/
 - [1.2.1](https://github.com/codexjr-dev/dashboard-codex-web/tree/2dce5a8514f3e40d22ab6b2258e13b9c3be90bae) - [Visual identity improvements, correction in confirm password, logoff button added, input hiding in "Enter Password" fields and new roles to "Add User" page.](https://github.com/codexjr-dev/dashboard-codex-web/pull/24).
 - [1.2.2](https://github.com/codexjr-dev/dashboard-codex-web/tree/240017003666675188a98c95538c1c9b0796a4de) - [console.log removed, role verifications updates, access to members and new roles to user.](https://github.com/codexjr-dev/dashboard-codex-web/pull/38).
 - [1.2.3](https://github.com/codexjr-dev/dashboard-codex-web/tree/1566154a0df4c308f7fc83014f06507c3656b7c7) - [Bug Fixes, System Improvements and Visual Improvements.](https://github.com/codexjr-dev/dashboard-codex-web/pull/80).
+- [1.2.4](https://github.com/codexjr-dev/dashboard-codex-web/tree/9ebd1514224e039ba3dce0808aef92645368c688) - [Two new buttons for create and preview project news, and invalid email format notification added.](https://github.com/codexjr-dev/dashboard-codex-web/pull/90)
 
 ## ✒️ Authors
 
