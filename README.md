@@ -7,8 +7,6 @@ Dashboard to organize and manage the team and the projects of our enterprise.
 With the aim of creating **efficient management** and **centralized data collection**, access to **leaders and** other **members** of the junior company, **Projexa** offers an environment for the construction and continuous evolution of a web system, open-source and, mainly, promoted by developers **CodeX Jr.** internals.
 The application has a register of members, projects and links, available for viewing by the entire company, as well as management over each one, according to the authorization level of each user.
 
-Read [endpoints.md.](https://github.com/codexjr-dev/dashboard-codex-api/blob/main/ENDPOINTS.md) for more API information.
-
 ## 🚀 Starting
 
 These instructions will allow you to get a copy of the project running on your local machine for development and testing purposes.
