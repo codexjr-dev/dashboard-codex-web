@@ -46,7 +46,7 @@ SALT_ROUNDS=<integer of your choice>
 JWT_SECRET=<jwt password>
 ```
 
-Perhaps dependencies such as **cors**, **dotenv**, **express**, **jsonwebtoken** and/or **mongoose** inform you that they need to be installed globally (on your machine).
+Perhaps dependencies such as **cors**, **dotenv**, **express**, **nodemon**, **jsonwebtoken** and/or **mongoose** inform you that they need to be installed globally (on your machine).
 
 To do so, just listen to the following commands:
 
@@ -64,10 +64,10 @@ Change the package.json according to your need:
 
 ```json
 "scripts": {
-   "start": "NODE_ENV=prod node src/server.js",
+   "start": "NODE_ENV=prod node server.js",
    "test": "NODE_ENV=test mocha ./test/integration/*.test.js --timeout 10000 --exit",
-   "dev": "NODE_ENV=dev nodemon src/server.js",
-   "debug": "NODE_ENV=dev nodemon --inspect src/server.js"
+   "dev": "NODE_ENV=dev nodemon server.js",
+   "debug": "NODE_ENV=dev nodemon --inspect server.js"
 }
 ```
 
@@ -75,10 +75,10 @@ Change the package.json according to your need:
 
 ```json
 "scripts": {
-   "start": "set NODE_ENV=prod node && src/server.js",
+   "start": "set NODE_ENV=prod node && server.js",
    "test": "set NODE_ENV=test && mocha ./test/integration/*.test.js --timeout 10000 --exit",
-   "dev": "set NODE_ENV=dev && nodemon src/server.js",
-   "debug": "set NODE_ENV=dev nodemon && --inspect src/server.js"
+   "dev": "set NODE_ENV=dev && nodemon server.js",
+   "debug": "set NODE_ENV=dev nodemon && --inspect server.js"
 }
 ```
 
