@@ -108,9 +108,10 @@ npm run test
 
 The main technologies used were:
 
-- [express](https://expressjs.com/) - The API used
+- [Vue](https://vuejs.org/) - The JavaScript framework used
 - [npm](https://docs.npmjs.com/) - Dependency Manager
-- [mongoose](https://mongoosejs.com/) - Mongodb object modeling
+- [Axios](https://axios-http.com/) - JavaScript library
+- [PugJs](https://pugjs.org/) - Template engine for JavaScript
 
 ## 🖇️ Collaboration
 
