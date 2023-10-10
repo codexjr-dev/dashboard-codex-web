@@ -36,14 +36,7 @@ npm install
 Also in the project root, add a ".env" file and insert the following variables:
 
 ```.env
-BD_PROD=<developer database link (MongoDB Atlas)>
-BD_DEV=<production database link (MongoDB Atlas)>
-
-PORT=<port on which you want to run the API. Ex: 4444>
-
-SALT_ROUNDS=<integer of your choice>
-
-JWT_SECRET=<jwt password>
+VITE_API_BASE_URL_DEV=<The URL that will be used to run the application (for example, you can use "http://localhost:4444" to run locally)>
 ```
 
 Perhaps dependencies such as **dotenv** inform you that it needs to be installed globally (on your machine).
