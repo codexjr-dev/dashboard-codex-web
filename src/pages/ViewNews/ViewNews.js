@@ -16,6 +16,7 @@ export default {
       this.$store.commit('SHOW_SIDEBAR', false);
       this.userInfo = await this.getUserInfo();
 
+      ElNotification.closeAll();
       ElNotification({
          title: 'Aguarde...',
          message: 'A coleta de atualizações pode levar alguns instantes',
@@ -29,12 +30,14 @@ export default {
          this.projectData = data.project;
          this.title = this.getTitle();
 
+         ElNotification.closeAll();
          ElNotification({
             title: 'Sucesso!',
             message: 'Atualizações do Projeto coletadas.',
             type: 'success',
          });
       } else {
+         ElNotification.closeAll();
          ElNotification({
             title: 'O projeto informado não existe',
             message: 'Você será redirecionado(a) para a Página de Projetos',
@@ -103,12 +106,14 @@ export default {
             document.execCommand('copy');
             document.body.removeChild(input);
 
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: `Link copiado para a área de tranferência`,
                type: 'success',
             })
          } else {
+            ElNotification.closeAll();
             ElNotification({
                title: 'Operação não realizada.',
                message: `A atualização não possui um URL adicional.`,
@@ -118,6 +123,7 @@ export default {
       },
 
       async handleDownloadImage(index, row) {
+         ElNotification.closeAll();
          ElNotification({
             title: 'Operação não realizada.',
             message: `Essa funcionalidade está em desenvolvimento.`,
@@ -141,6 +147,7 @@ export default {
 
             this.$store.commit('SET_MODAL', '');
 
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: `Atualização editada com sucesso.`,
@@ -194,6 +201,7 @@ export default {
          try {
             const data = await this.deleteNews({ projectId: row.project, newsId: row._id });
 
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: 'Atualização removida com sucesso',
@@ -204,6 +212,7 @@ export default {
                this.newsData = data.news
             }
          } catch (error) {
+            ElNotification.closeAll();
             ElNotification({
                title: 'Operação não realizada.',
                message: 'Ocorreu algum erro ao deletar a atualização.',
