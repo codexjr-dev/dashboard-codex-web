@@ -24,7 +24,7 @@ To install, you will need to clone the project, install the dependencies, create
 First, to clone the project, run:
 
 ```shell
-git clone https://github.com/codexjr-dev/dashboard-codex-api.git
+git clone https://github.com/codexjr-dev/dashboard-codex-web.git
 ```
 
 At the project root, install the dependencies by running:
@@ -46,7 +46,7 @@ SALT_ROUNDS=<integer of your choice>
 JWT_SECRET=<jwt password>
 ```
 
-Perhaps dependencies such as **cors**, **dotenv**, **express**, **nodemon**, **jsonwebtoken** and/or **mongoose** inform you that they need to be installed globally (on your machine).
+Perhaps dependencies such as **dotenv** inform you that it needs to be installed globally (on your machine).
 
 To do so, just listen to the following commands:
 
