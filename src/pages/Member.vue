@@ -63,6 +63,7 @@ div
          :isVisualizar="isVisualizar"
          :membro="novoMembro"
          :errorEmailInUse="errorEmailInUse"
+         @setValid="setValid"
       )
       template(
          #footer
@@ -117,11 +118,7 @@ export default {
          errorEmailInUse: "",
       }
    },
-
-   setValid(value) {
-      this.valid = value;
-   },
-
+   
    computed: {
       showModal() {
          return this.$store.state.header.modal === 'membro'
@@ -130,7 +127,7 @@ export default {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
       }
    },
-
+   
    methods: {
       ...mapActions({
          findAllMembers: 'findAllMembers',
@@ -138,27 +135,31 @@ export default {
          updateMember: 'updateMember',
          deleteMember: 'deleteMember'
       }),
-
+      
       async getMembros() {
          const res = await this.findAllMembers()
          res.status === 404 ?
-            localStorage.clear() || this.$router.push({ name: 'Home' })
-            : this.dados = res.members
+         localStorage.clear() || this.$router.push({ name: 'Home' })
+         : this.dados = res.members
       },
-
+      
       isThisMemberLoged(member) {
          return member.loged;
       },
-
+      
       formatDate(row, column, prop) {
          return prop ? Utils.formatDate(prop) : '-'
       },
-
+      
       closeModal() {
          this.isVisualizar = false
          this.isEditar = false
          this.novoMembro = cloneDeep(models.emptyMember)
          this.$store.commit('SET_MODAL', '')
+      },
+      
+      setValid(value) {
+         this.valid = value;
       },
 
       async salvar() {
