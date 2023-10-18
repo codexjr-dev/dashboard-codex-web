@@ -109,6 +109,7 @@ div.modal-content
             type="password"
             placeholder="Senha"
             v-model="membro.password"
+            @input="validatePassword"
             :disabled="isVisualizar"
          )
       el-row
