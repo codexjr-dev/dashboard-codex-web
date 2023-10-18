@@ -66,6 +66,7 @@ export default {
       }),
 
       async save() {
+         ElNotification.closeAll();
          ElNotification({
             title: 'Aguarde...',
             message: 'O cadastro da empresa pode levar alguns instantes',
@@ -74,6 +75,7 @@ export default {
 
          try {
             await this.createEj(this.cadastroData)
+            ElNotification.closeAll();
             ElNotification({
                title: 'Sucesso',
                message: 'A Empresa Júnior foi cadastrada com sucesso!',
@@ -81,6 +83,7 @@ export default {
             })
             this.$router.push({ name: 'Login' })
          } catch (error) {
+            ElNotification.closeAll();
             ElNotification({
                title: 'Ops!',
                message: 'Ocorreu um erro no seu cadastro',
