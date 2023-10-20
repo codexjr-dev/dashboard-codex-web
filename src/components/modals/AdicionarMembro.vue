@@ -114,6 +114,7 @@ div.modal-content
             type="password"
             placeholder="Senha"
             v-model="membro.password"
+            @input="validatePassword"
             :disabled="isVisualizar"
          )
       el-row
@@ -296,15 +297,6 @@ export default {
          findById: 'findById',
       }),
 
-      validatePassword() {
-         if (this.membro.password !== this.membro.confirmPassword) {
-            this.errorMessage = 'As senhas não são iguais!';
-            this.$emit("setValid", false);
-         } else {
-            this.errorMessage = '';
-            this.$emit("setValid", true);
-         }
-      },
       validateEmail() {
          if (!this.membro.email) {
             this.errorInvalidEmail = 'O campo de email não pode estar vazio.';
@@ -338,6 +330,15 @@ export default {
          return this.isVisualizar || !this.isLeadership;
       },
 
+      validatePassword() {
+         if (this.membro.password !== this.membro.confirmPassword) {
+            this.errorMessage = 'As senhas não são iguais!';
+            this.$emit("setValid", false);
+         } else {
+            this.errorMessage = '';
+            this.$emit("setValid", true);
+         }
+      }
    },
 }
 
