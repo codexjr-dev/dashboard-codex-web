@@ -8,8 +8,13 @@ div.modal-content
          el-input(
             placeholder="Nome"
             v-model="membro.name"
+            @blur="validateName"
+            :class="errorMessageName ? 'required-field': ''"
             :disabled="isToDisable"
             )
+         el-text.verifyPassword(
+            v-if="errorMessageName"
+         ) {{ errorMessageName }}
       div.date-pickers
          el-row
             el-divider(
@@ -167,12 +172,14 @@ export default {
       },
       errorInvalidEmail: String,
       errorEmailInUse: String,
+      errorMessageName: String
    },
 
    data() {
       return {
          dados: [],
          errorInvalidEmail: "",
+         errorMessageName: "",
          habilidades: [
             {
                id: 1,
@@ -310,6 +317,16 @@ export default {
             }
          }
       },
+      
+      validateName() {
+         if(!this.membro.name || this.membro.name.trim().length === 0) {
+            this.errorMessageName = '*Campo obrigatório';
+            this.$emit("setValidName", false);
+         } else {
+            this.errorMessageName = '';
+            this.$emit("setValidName", true);
+         }
+      },
    },
 
    computed: {
@@ -319,13 +336,17 @@ export default {
 
       isToDisable() {
          return this.isVisualizar || !this.isLeadership;
-      }
+      },
+
    },
 }
 
 </script>
 
 <style lang="scss" scoped>
+.required-field {
+   --el-border-color: red;
+}
 .modal-content {
    display: flex;
    gap: 2%;

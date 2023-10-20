@@ -63,6 +63,7 @@ div
          :isVisualizar="isVisualizar"
          :membro="novoMembro"
          :errorEmailInUse="errorEmailInUse"
+         @setValidName="setValidName"
       )
       template(
          #footer
@@ -109,6 +110,7 @@ export default {
    data() {
       return {
          valid: true,
+         validName: false,
          dados: [],
          novoMembro: cloneDeep(models.emptyMember),
          isEditar: false,
@@ -161,9 +163,18 @@ export default {
          this.$store.commit('SET_MODAL', '')
       },
 
+      setValidName(value) {
+         this.validName = value;
+      },
+
+      setValidation() {
+         return (this.valid && this.validName);
+      },
+
       async salvar() {
          try {
-            if (this.valid) {
+            console.log(this.setValidation())
+            if (this.setValidation()) {
                const res = await this.createMember(this.novoMembro)
                ElNotification({
                   title: 'Tudo certo!',
