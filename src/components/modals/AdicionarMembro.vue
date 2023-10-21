@@ -16,7 +16,7 @@ div.modal-content
             v-if="errorMessageName"
          ) {{ errorMessageName }}
       div.date-pickers
-         el-row
+         div.col
             el-divider(
                content-position="left"
             ) *Data de nascimento
@@ -34,7 +34,7 @@ div.modal-content
                   el-text.verify(
                      v-if="errorMessageBirth"
                   ) {{ errorMessageBirth }}
-         el-row
+         div.col
             el-divider(
                content-position="left"
             ) *Data de entrada
