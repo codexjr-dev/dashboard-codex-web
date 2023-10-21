@@ -4,7 +4,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-         ) Nome
+         ) *Nome
          el-input(
             placeholder="Nome"
             v-model="membro.name"
@@ -19,7 +19,7 @@ div.modal-content
          el-row
             el-divider(
                content-position="left"
-            ) Data de nascimento
+            ) *Data de nascimento
             div(:class="errorMessageBirth ? 'required-field': ''")
                el-date-picker(
                   placeholder="Data de nascimento"
@@ -37,7 +37,7 @@ div.modal-content
          el-row
             el-divider(
                content-position="left"
-            ) Data de entrada
+            ) *Data de entrada
             div(:class="errorMessageEntry ? 'required-field': ''")
                el-date-picker(
                   placeholder="Data de entrada"
@@ -74,7 +74,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-         ) Diretoria
+         ) *Diretoria
          el-select(
             v-model="membro.department"
             @blur="validateDepartament"
@@ -95,7 +95,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-            ) Função
+            ) *Função
          el-select(
             v-model="membro.role"
             @blur="validateRole"
@@ -118,7 +118,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-         ) Email
+         ) *Email
          el-input(
             placeholder="Email"
             v-model="membro.email"
@@ -132,7 +132,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-            ) Senha
+            ) *Senha
          el-input(
             type="password"
             placeholder="Senha"
@@ -148,7 +148,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-         ) Confirmar a senha
+         ) *Confirmar a senha
          el-input(
             type="password"
             placeholder="Confirmar a senha"
@@ -165,7 +165,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-         ) Telefone
+         ) *Telefone
          el-input(
             placeholder="Telefone"
             v-model="membro.phone"
