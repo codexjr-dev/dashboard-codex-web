@@ -63,6 +63,7 @@ div
          :isVisualizar="isVisualizar"
          :membro="novoMembro"
          :errorEmailInUse="errorEmailInUse"
+         @setValid="setValid"
       )
       template(
          #footer
@@ -93,6 +94,7 @@ export default {
    },
 
    async mounted() {
+      ElNotification.closeAll();
       ElNotification({
          title: 'Aguarde...',
          message: 'A coleta de membros pode levar alguns instantes',
@@ -100,6 +102,7 @@ export default {
       });
       this.$store.commit('SET_SIDEBAR_OPTION', this.$route.name.toLowerCase())
       await this.getMembros()
+      ElNotification.closeAll();
       ElNotification({
          title: 'Sucesso!',
          message: 'Lista de membros coletada.',
@@ -118,11 +121,7 @@ export default {
          errorEmailInUse: "",
       }
    },
-
-   setValid(value) {
-      this.valid = value;
-   },
-
+   
    computed: {
       showModal() {
          return this.$store.state.header.modal === 'membro'
@@ -131,7 +130,7 @@ export default {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
       }
    },
-
+   
    methods: {
       ...mapActions({
          findAllMembers: 'findAllMembers',
@@ -139,33 +138,38 @@ export default {
          updateMember: 'updateMember',
          deleteMember: 'deleteMember'
       }),
-
+      
       async getMembros() {
          const res = await this.findAllMembers()
          res.status === 404 ?
-            localStorage.clear() || this.$router.push({ name: 'Home' })
-            : this.dados = res.members
+         localStorage.clear() || this.$router.push({ name: 'Home' })
+         : this.dados = res.members
       },
-
+      
       isThisMemberLoged(member) {
          return member.loged;
       },
-
+      
       formatDate(row, column, prop) {
          return prop ? moment.utc(prop).format('DD/MM/YYYY') : '-';
       },
-
+      
       closeModal() {
          this.isVisualizar = false
          this.isEditar = false
          this.novoMembro = cloneDeep(models.emptyMember)
          this.$store.commit('SET_MODAL', '')
       },
+      
+      setValid(value) {
+         this.valid = value;
+      },
 
       async salvar() {
          try {
             if (this.valid) {
                const res = await this.createMember(this.novoMembro)
+               ElNotification.closeAll();
                ElNotification({
                   title: 'Tudo certo!',
                   message: `${res.member.name} foi cadastrado com sucesso`,
@@ -187,6 +191,7 @@ export default {
       async excluir(index, row) {
          try {
             await this.deleteMember(row._id)
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: 'Membro removido com sucesso',
@@ -194,6 +199,7 @@ export default {
             })
             await this.getMembros()
          } catch (error) {
+            ElNotification.closeAll();
             ElNotification({
                title: 'Falha ao remover membro!',
                message: 'A presença de ao menos uma liderança na EJ é obrigatória.',
@@ -222,6 +228,7 @@ export default {
             const res = await this.updateMember({ membro: this.novoMembro, id: this.novoMembro._id })
             this.isEditar = false
             this.$store.commit('SET_MODAL', '')
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: `${res.member.name} foi editado com sucesso`,

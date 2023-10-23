@@ -93,6 +93,7 @@ export default {
       },
 
       handleNotifyUnderDevelopment() {
+         ElNotification.closeAll();
          ElNotification({
             title: 'Operação não realizada.',
             message: 'Essa funcionalidade está em desenvolvimento.',
