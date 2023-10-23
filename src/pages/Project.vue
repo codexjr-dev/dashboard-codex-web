@@ -46,13 +46,7 @@ div
                      :style="'background: #E8A8CE'"
                   )
                      el-icon
-                        View()
-                  div.actions-button(
-                     @click="handleViewProject(scope.$index, scope.row)"
-                     :style="'background: #67c23a'"
-                  )
-                     el-icon
-                        View()
+                        List()
                   div.actions-button(
                      v-if="isLeadership"
                      @click="handleEditProject(scope.$index, scope.row)"
@@ -60,6 +54,12 @@ div
                   )
                      el-icon
                         Edit()
+                  div.actions-button(
+                     @click="handleViewProject(scope.$index, scope.row)"
+                     :style="'background: #67c23a'"
+                  )  
+                     el-icon
+                        View()
                   div.actions-button(
                      v-if="isLeadership"
                      @click="handleDeleteProject(scope.$index, scope.row)"
