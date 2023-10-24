@@ -84,6 +84,7 @@ import AdicionarMembro from '@/components/modals/AdicionarMembro.vue'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
+import moment from 'moment';
 
 export default {
    name: 'Member',
@@ -150,7 +151,7 @@ export default {
       },
       
       formatDate(row, column, prop) {
-         return prop ? Utils.formatDate(prop) : '-'
+         return prop ? moment.utc(prop).format('DD/MM/YYYY') : '-';
       },
       
       closeModal() {

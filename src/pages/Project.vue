@@ -121,6 +121,7 @@ import AddNewsModal from '@/components/modals/AddNewsModal.vue'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
+import moment from 'moment';
 
 export default {
    name: 'Project',
@@ -189,7 +190,7 @@ export default {
       },
 
       formatDate(row, column, prop) {
-         return Utils.formatDate(prop)
+         return prop ? moment.utc(prop).format('DD/MM/YYYY') : '-';
       },
 
       formatList(row, column, prop) {
