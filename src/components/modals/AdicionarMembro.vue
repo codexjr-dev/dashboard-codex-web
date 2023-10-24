@@ -4,37 +4,54 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-         ) Nome
+         ) *Nome
          el-input(
             placeholder="Nome"
             v-model="membro.name"
+            @blur="validateName"
+            :class="errorMessageName ? 'required-field': ''"
             :disabled="isToDisable"
             )
+         el-text.verify(
+            v-if="errorMessageName"
+         ) {{ errorMessageName }}
       div.date-pickers
-         el-row
+         div.col
             el-divider(
                content-position="left"
-            ) Data de nascimento
-            el-date-picker(
-               placeholder="Data de nascimento"
-               format="DD/MM/YYYY"
-               value-format="YYYY-MM-DD"
-               style="width: 100%"
-               v-model="membro.birthDate"
-               :disabled="isToDisable"
-                  )
-         el-row
+            ) *Data de nascimento
+            div(:class="errorMessageBirth ? 'required-field': ''")
+               el-date-picker(
+                  placeholder="Data de nascimento"
+                  format="DD/MM/YYYY"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                  v-model="membro.birthDate"
+                  @blur="validateBirth"
+                  :disabled="isToDisable"
+               )
+               div.message
+                  el-text.verify(
+                     v-if="errorMessageBirth"
+                  ) {{ errorMessageBirth }}
+         div.col
             el-divider(
                content-position="left"
-            ) Data de entrada
-            el-date-picker(
-               placeholder="Data de entrada"
-               format="DD/MM/YYYY"
-               value-format="YYYY-MM-DD"
-               style="width: 100%"
-               v-model="membro.entryDate"
-               :disabled="isToDisable"
-                  )
+            ) *Data de entrada
+            div(:class="errorMessageEntry ? 'required-field': ''")
+               el-date-picker(
+                  placeholder="Data de entrada"
+                  format="DD/MM/YYYY"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                  v-model="membro.entryDate"
+                  @blur="validateEntry"
+                  :disabled="isToDisable"
+               )
+               div.message
+                  el-text.verify(
+                     v-if="errorMessageEntry"
+                  ) {{ errorMessageEntry }}
       el-row
          el-divider(
             content-position="left"
@@ -57,9 +74,11 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-         ) Diretoria
+         ) *Diretoria
          el-select(
             v-model="membro.department"
+            @blur="validateDepartament"
+            :class="errorMessageDepartament ? 'required-field': ''"
             placeholder="Selecione a diretoria"
             value-key="id"
             :disabled="isToDisable"
@@ -70,12 +89,17 @@ div.modal-content
                :label="diretoria.value",
                :value="diretoria.value"
             )
+         el-text.verify(
+            v-if="errorMessageDepartament"
+         ) {{ errorMessageDepartament }}
       el-row
          el-divider(
             content-position="left"
             ) Cargos
          el-select(
             v-model="membro.role"
+            @blur="validateRole"
+            :class="errorMessageRole ? 'required-field': ''"
             placeholder="Selecione o cargo"
             value-key="id"
             :disabled="isToDisable"
@@ -86,17 +110,21 @@ div.modal-content
                :label="funcao.value",
                :value="funcao.value"
             )
+         el-text.verify(
+            v-if="errorMessageRole"
+         ) {{ errorMessageRole }}
 
    div.col
       el-row
          el-divider(
             content-position="left"
-         ) Email
+         ) *Email
          el-input(
             placeholder="Email"
             v-model="membro.email"
             :disabled="isToDisable"
             @blur="validateEmail"
+            :class="errorEmailInUse || errorInvalidEmail ? 'required-field': ''"
             )
          el-text.error-email(
             v-if="errorEmailInUse || errorInvalidEmail"
@@ -104,39 +132,51 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-            ) Senha
+            ) *Senha
          el-input(
             type="password"
             placeholder="Senha"
             v-model="membro.password"
+            @blur="validatePasswordEmpty"
+            :class="errorMessagePassword ? 'required-field': ''"
             @input="validatePassword"
             :disabled="isVisualizar"
          )
+         el-text.verify(
+            v-if="errorMessagePassword"
+         ) {{ errorMessagePassword }}
       el-row
          el-divider(
             content-position="left"
-         ) Confirmar a senha
+         ) *Confirmar a senha
          el-input(
             type="password"
             placeholder="Confirmar a senha"
             v-model="membro.confirmPassword"
+            @blur="validateConfirmPassword"
+            :class="errorMessage ? 'required-field': ''"
             @input="validatePassword"
             :disabled="isVisualizar"
          )
-         el-text.verifyPassword(
+         el-text.verify(
             v-if="errorMessage"
          ) {{ errorMessage }}
 
       el-row
          el-divider(
             content-position="left"
-         ) Telefone
+         ) *Telefone
          el-input(
             placeholder="Telefone"
             v-model="membro.phone"
+            @blur="validatePhone"
+            :class="errorMessagePhone ? 'required-field': ''"
             v-mask="['(##)#####-####']"
             :disabled="isToDisable"
             )
+         el-text.verify(
+            v-if="errorMessagePhone"
+         ) {{ errorMessagePhone }}
       el-row
          el-divider(
             content-position="left"
@@ -166,14 +206,59 @@ export default {
          required: false,
          default: false
       },
+      invalid: {
+         type: Boolean,
+         required: false,
+         default: false
+      },
       errorInvalidEmail: String,
       errorEmailInUse: String,
+      errorMessageName: String,
+      errorMessageBirth: String,
+      errorMessageEntry: String,
+      errorMessageDepartament: String,
+      errorMessageRole: String,
+      errorMessagePassword: String,
+      errorMessage: String,
+      errorMessagePhone: String
+   },
+
+   watch: {
+      invalid: {
+         immediate: false,
+
+         handler(newValue) {
+            if(newValue) {
+               this.validateName();
+               this.validateBirth();
+               this.validateEntry();
+               this.validateDepartament();
+               this.validateRole();
+               this.validateEmail();
+               this.validatePasswordEmpty();
+               this.validateConfirmPassword();
+               this.validatePhone();
+            }
+         }
+      }
    },
 
    data() {
       return {
+         customDatePicker: {
+            boundariesPadding: 0,
+            gpuAcceleration: false
+         },
          dados: [],
          errorInvalidEmail: "",
+         errorMessageName: "",
+         errorMessageBirth: "",
+         errorMessageEntry: "",
+         errorMessageDepartament: "",
+         errorMessageRole: "",
+         errorMessagePassword: "",
+         errorMessage: "",
+         errorMessagePhone: "",
          habilidades: [
             {
                id: 1,
@@ -293,13 +378,98 @@ export default {
       validateEmail() {
          if (!this.membro.email) {
             this.errorInvalidEmail = 'O campo de email não pode estar vazio.';
+            this.$emit("setValidEmail", false);
          } else {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!regex.test(this.membro.email)) {
                this.errorInvalidEmail = 'Formato de email inválido.';
+               this.$emit("setValidEmail", false);
             } else {
                this.errorInvalidEmail = '';
+               this.$emit("setValidEmail", true);
             }
+         }
+      },
+      
+      validateName() {
+         if(!this.membro.name || this.membro.name.trim().length === 0) {
+            this.errorMessageName = '*Campo obrigatório';
+            this.$emit("setValidName", false);
+         } else {
+            this.errorMessageName = '';
+            this.$emit("setValidName", true);
+         }
+      },
+
+      validateBirth() {
+         if(!this.membro.birthDate) {
+            this.errorMessageBirth = '*Campo obrigatório';
+            this.$emit("setValidBirth", false);
+         } else {
+            this.errorMessageBirth = '';
+            this.$emit("setValidBirth", true);
+         }
+      },
+
+      validateEntry() {
+         if(!this.membro.entryDate) {
+            this.errorMessageEntry = '*Campo obrigatório';
+            this.$emit("setValidEntry", false);
+         } else {
+            this.errorMessageEntry = '';
+            this.$emit("setValidEntry", true);
+         }
+      },
+
+      validateDepartament() {
+         if(!(['Presidência', 'Gente & Gestão', 'Marketing', 'Negócios', 
+      'Projetos', 'Qualidade'].includes(this.membro.department))) {
+            this.errorMessageDepartament = '*Campo obrigatório';
+            this.$emit("setValidDepartament", false);
+         } else {
+            this.errorMessageDepartament = '';
+            this.$emit("setValidDepartament", true);
+         }
+      },
+
+      validateRole() {
+         if(!['Presidente','Diretor(a)','Assessor(a)','Conselheiro(a)','Pós-Júnior',
+         'Guardiã(o)','Trainee','Ex-Trainee'].includes(this.membro.role)) {
+            this.errorMessageRole = '*Campo obrigatório';
+            this.$emit("setValidRole", false);
+         } else {
+            this.errorMessageRole = '';
+            this.$emit("setValidRole", true);
+         }
+      },
+
+      validatePasswordEmpty() {
+         if(!this.membro.password || this.membro.password.trim().length === 0) {
+            this.errorMessagePassword = '*Campo obrigatório';
+            this.$emit("setValidPassword", false);
+         } else {
+            this.errorMessagePassword = '';
+            this.$emit("setValidPassword", true);
+         }
+      },
+
+      validateConfirmPassword() {
+         if(!this.membro.confirmPassword || this.membro.confirmPassword.trim().length === 0) {
+            this.errorMessage = '*Campo obrigatório';
+            this.$emit("setValidConfirm", false);
+         } else {
+            this.errorMessage = '';
+            this.$emit("setValidConfirm", true);
+         }
+      },
+
+      validatePhone() {
+         if(!this.membro.phone || this.membro.phone.trim().length === 0) {
+            this.errorMessagePhone = '*Campo obrigatório';
+            this.$emit("setValidPhone", false);
+         } else {
+            this.errorMessagePhone = '';
+            this.$emit("setValidPhone", true);
          }
       },
    },
@@ -328,6 +498,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.required-field {
+   --el-border-color: red;
+}
 .modal-content {
    display: flex;
    gap: 2%;
@@ -346,10 +519,12 @@ export default {
    gap: 2%;
    margin-bottom: 1vh;
 }
-
-.verifyPassword {
+.message {
+   margin-top: 10px;
+}
+.verify {
    color: red;
-   margin-top: 5px;
+   margin-top: 2px;
    margin-left: 15px;
 }
 

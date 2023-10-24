@@ -61,9 +61,19 @@ div
       adicionar-membro(
          :titleModal='titleModal'
          :isVisualizar="isVisualizar"
+         :invalid="invalid"
          :membro="novoMembro"
          :errorEmailInUse="errorEmailInUse"
          @setValid="setValid"
+         @setValidName="setValidName"
+         @setValidBirth="setValidBirth"
+         @setValidEntry="setValidEntry"
+         @setValidDepartament="setValidDepartament"
+         @setValidRole="setValidRole"
+         @setValidEmail="setValidEmail"
+         @setValidPassword="setValidPassword"
+         @setValidConfirm="setValidConfirm"
+         @setValidPhone="setValidPhone"
       )
       template(
          #footer
@@ -112,7 +122,17 @@ export default {
 
    data() {
       return {
-         valid: true,
+         valid: false,
+         validName: false,
+         validBirth: false,
+         validEntry: false,
+         validDepartament: false,
+         validRole: false,
+         validEmail: false,
+         validPassword: false,
+         validConfirm: false,
+         validPhone: false,
+         invalid: false,
          dados: [],
          novoMembro: cloneDeep(models.emptyMember),
          isEditar: false,
@@ -165,9 +185,58 @@ export default {
          this.valid = value;
       },
 
+      setValidName(value) {
+         this.validName = value;
+      },
+
+      setValidBirth(value) {
+         this.validBirth = value;
+      },
+
+      setValidEntry(value) {
+         this.validEntry = value;
+      },
+
+      setValidDepartament(value) {
+         this.validDepartament = value;
+      },
+
+      setValidRole(value) {
+         this.validRole = value;
+      },
+
+      setValidEmail(value) {
+         this.validEmail = value
+      },
+
+      setValidPassword(value) {
+         this.validPassword = value;
+      },
+
+      setValidConfirm(value) {
+         this.validConfirm = value;
+      },
+
+      setValidPhone(value) {
+         this.validPhone = value;
+      },
+
+      setValidation() {
+         if(!this.valid || !this.validName || !this.validBirth || !this.validEntry 
+         || !this.validDepartament || !this.validRole || !this.validEmail || !this.validPassword
+         || !this.validConfirm || !this.validPhone) {
+            this.invalid = true;
+         } else {
+            this.invalid = false;
+         }
+         return (this.valid && this.validName && this.validBirth && this.validEntry 
+         && this.validDepartament && this.validRole && this.validEmail && this.validPassword
+         && this.validConfirm && this.validPhone);
+      },
+
       async salvar() {
          try {
-            if (this.valid) {
+            if (this.setValidation()) {
                const res = await this.createMember(this.novoMembro)
                ElNotification.closeAll();
                ElNotification({
