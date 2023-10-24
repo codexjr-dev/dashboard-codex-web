@@ -235,7 +235,6 @@ export default {
 
       async salvar() {
          try {
-            console.log(this.setValidation())
             if (this.setValidation()) {
                const res = await this.createMember(this.novoMembro)
                ElNotification.closeAll();
