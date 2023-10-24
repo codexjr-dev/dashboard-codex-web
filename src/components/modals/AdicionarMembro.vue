@@ -95,12 +95,12 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-            ) *Função
+            ) Cargos
          el-select(
             v-model="membro.role"
             @blur="validateRole"
             :class="errorMessageRole ? 'required-field': ''"
-            placeholder="Selecione a função"
+            placeholder="Selecione o cargo"
             value-key="id"
             :disabled="isToDisable"
          )
