@@ -89,7 +89,7 @@ export default {
       },
 
       formatDate(row, column, prop) {
-         return Utils.formatDate(prop)
+         return Utils.formatDate(prop);
       },
 
       getTitle() {

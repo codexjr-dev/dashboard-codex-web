@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 const formatDate = (value, format = 'DD/MM/YYYY') => {
-    return moment(value).format(format)
+    return value ? moment.utc(value).local(true).format(format) : '-';
 }
 
 const formatEmptyRow = (row, column, prop) => prop || '-'

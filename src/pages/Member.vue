@@ -171,7 +171,7 @@ export default {
       },
       
       formatDate(row, column, prop) {
-         return prop ? moment.utc(prop).format('DD/MM/YYYY') : '-';
+         return Utils.formatDate(prop);
       },
       
       closeModal() {
