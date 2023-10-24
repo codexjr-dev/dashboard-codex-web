@@ -57,10 +57,15 @@ Change the package.json according to your need:
 
 ```json
 "scripts": {
-   "start": "NODE_ENV=prod node server.js",
-   "test": "NODE_ENV=test mocha ./test/integration/*.test.js --timeout 10000 --exit",
-   "dev": "NODE_ENV=dev nodemon server.js",
-   "debug": "NODE_ENV=dev nodemon --inspect server.js"
+   "dev": "VUE_ENV=dev vite",
+   "postinstall": "npm run build",
+   "start": "VUE_ENV=prod node server.js",
+   "build": "vite build",
+   "preview": "vite preview --port 5050",
+   "test:unit": "vitest --environment jsdom",
+   "test:e2e": "start-server-and-test preview http://127.0.0.1:5050/ 'cypress open'",
+   "test:e2e:ci": "start-server-and-test preview http://127.0.0.1:5050/ 'cypress run'",
+   "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
 }
 ```
 
@@ -68,10 +73,15 @@ Change the package.json according to your need:
 
 ```json
 "scripts": {
-   "start": "set NODE_ENV=prod node && server.js",
-   "test": "set NODE_ENV=test && mocha ./test/integration/*.test.js --timeout 10000 --exit",
-   "dev": "set NODE_ENV=dev && nodemon server.js",
-   "debug": "set NODE_ENV=dev nodemon && --inspect server.js"
+   "dev": "SET VUE_ENV=dev && vite",
+   "postinstall": "npm run build",
+   "start": "SET VUE_ENV=prod && node server.js",
+   "build": "vite build",
+   "preview": "vite preview --port 5050",
+   "test:unit": "vitest --environment jsdom",
+   "test:e2e": "start-server-and-test preview http://127.0.0.1:5050/ 'cypress open'",
+   "test:e2e:ci": "start-server-and-test preview http://127.0.0.1:5050/ 'cypress run'",
+   "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
 }
 ```
 

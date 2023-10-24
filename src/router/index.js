@@ -4,6 +4,7 @@ import Cadastro from '../pages/Cadastro.vue'
 import Login from '../pages/Login.vue'
 import Member from '../pages/Member.vue'
 import Project from '../pages/Project.vue'
+import ViewNews from '../pages/ViewNews/ViewNews.vue'
 import Link from '../pages/Link.vue'
 import Settings from '../pages/Settings.vue'
 
@@ -46,6 +47,14 @@ const routes = [
         meta: {
             requiresAuth: true
         }
+    },
+    {
+      name: 'ViewNews',
+      path: '/project/:projectId/news',
+      component: ViewNews,
+      meta: {
+          requiresAuth: true
+      }
     },
     {
         name: 'Link',

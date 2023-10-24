@@ -43,9 +43,16 @@ const emptyUser = {
     confirmPassword: ''
 }
 
+const emptyNews = {
+    description: '',
+    image: '',
+    updateLink: ''
+}
+
 export default {
     emptyMember,
     emptyProject,
     emptyLink,
-    emptyUser
+    emptyUser,
+    emptyNews
 }
