@@ -15,7 +15,7 @@ div
          )
          el-table-column(
             prop="role",
-            label="Função",
+            label="Cargos",
          )
          el-table-column(
             prop="birthDate",
