@@ -31,18 +31,18 @@ div
             )
                div.actions()
                   div.actions-button(
-                     @click="handleVisualizar(scope.$index, scope.row)"
-                     :style="'background: #67c23a'"
-                  )
-                     el-icon
-                        View()
-                  div.actions-button(
                      v-if="isLeadership || isThisMemberLoged(scope.row)"
                      @click="handleEditar(scope.$index, scope.row)"
                      :style="'background: #4b53c6'"
                   )
                      el-icon
                         Edit()
+                  div.actions-button(
+                     @click="handleVisualizar(scope.$index, scope.row)"
+                     :style="'background: #67c23a'"
+                  )
+                     el-icon
+                        View()
                   div.actions-button(
                      v-if="isLeadership"
                      @click="handleExcluir(scope.$index, scope.row)"
