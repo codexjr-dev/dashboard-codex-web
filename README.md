@@ -107,7 +107,7 @@ Execute tests, creating a temporary Data Base:
 npm run test
 ```
 
-## 🛠️ Construído com
+## 🛠️ Built with
 
 The main technologies used were:
 
@@ -203,7 +203,7 @@ You can also see the list of all contributors who participated in this project.
    </tr>
 </table>
 
-## 📄 Licença
+## 📄 License
 
 This project is under license **GNU General Public License v3.0 (GNU GPLv3)** - see the file [LICENSE.md](https://github.com/codexjr-dev/dashboard-codex-web/blob/main/LICENSE.md) for details.
 
