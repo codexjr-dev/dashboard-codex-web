@@ -46,13 +46,7 @@ div
                      :style="'background: #E8A8CE'"
                   )
                      el-icon
-                        View()
-                  div.actions-button(
-                     @click="handleViewProject(scope.$index, scope.row)"
-                     :style="'background: #67c23a'"
-                  )
-                     el-icon
-                        View()
+                        List()
                   div.actions-button(
                      v-if="isLeadership"
                      @click="handleEditProject(scope.$index, scope.row)"
@@ -60,6 +54,12 @@ div
                   )
                      el-icon
                         Edit()
+                  div.actions-button(
+                     @click="handleViewProject(scope.$index, scope.row)"
+                     :style="'background: #67c23a'"
+                  )  
+                     el-icon
+                        View()
                   div.actions-button(
                      v-if="isLeadership"
                      @click="handleDeleteProject(scope.$index, scope.row)"
@@ -121,6 +121,7 @@ import AddNewsModal from '@/components/modals/AddNewsModal.vue'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
+import moment from 'moment';
 
 export default {
    name: 'Project',
@@ -131,6 +132,7 @@ export default {
    },
 
    async mounted() {
+      ElNotification.closeAll()
       ElNotification({
          title: 'Aguarde...',
          message: 'A coleta de projetos pode levar alguns instantes',
@@ -141,6 +143,7 @@ export default {
       this.$store.commit('SET_SIDEBAR_OPTION', this.$route.name.toLowerCase())
       const res = await this.findAllProjects()
       this.dados = res.projects
+      ElNotification.closeAll();
       ElNotification({
          title: 'Sucesso!',
          message: 'Lista de projetos coletada.',
@@ -187,7 +190,7 @@ export default {
       },
 
       formatDate(row, column, prop) {
-         return Utils.formatDate(prop)
+         return Utils.formatDate(prop);
       },
 
       formatList(row, column, prop) {
@@ -242,6 +245,7 @@ export default {
       async salvar() {
          try {
             const res = await this.createProject(this.novoProjeto)
+            ElNotification.closeAll()
             ElNotification({
                title: 'Tudo certo!',
                message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
@@ -258,6 +262,7 @@ export default {
             const res = await this.updateProject({ project: this.novoProjeto, id: this.novoProjeto._id })
             this.isEditar = false
             this.$store.commit('SET_MODAL', '')
+            ElNotification.closeAll()
             ElNotification({
                title: 'Tudo certo!',
                message: `${res.project.name} foi editado com sucesso`,
@@ -277,6 +282,7 @@ export default {
       async saveNews() {
          try {
             await this.createNews({ news: this.newsToBeCreated, projectId: this.novoProjeto._id })
+            ElNotification.closeAll()
             ElNotification({
                title: 'Tudo certo!',
                message: `Atualização criada com sucesso!`,
@@ -312,6 +318,7 @@ export default {
       async excluir(index, row) {
          try {
             await this.deleteProject(row._id)
+            ElNotification.closeAll()
             ElNotification({
                title: 'Tudo certo!',
                message: 'Projeto removido com sucesso',

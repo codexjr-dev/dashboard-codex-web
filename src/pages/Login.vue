@@ -47,6 +47,7 @@ export default {
       }),
 
       async entrar() {
+         ElNotification.closeAll();
          ElNotification({
             title: 'Aguarde...',
             message: 'O login pode levar alguns instantes',
@@ -60,12 +61,14 @@ export default {
                localStorage.setItem('@role', res.dados.member.role)
                this.$store.commit('SHOW_SIDEBAR', true)
                this.$router.push({ name: 'Member' })
+               ElNotification.closeAll();
                ElNotification({
                   title: 'Sucesso!',
                   message: 'Login efetuado.',
                   type: 'success',
                });
             } catch (error) {
+               ElNotification.closeAll();
                ElNotification({
                   title: 'Ops!',
                   message: 'Usuário ou senha incorretos',

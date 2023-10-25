@@ -11,18 +11,18 @@ div
          )
          el-table-column(
             prop="url",
-               label="URL",
-)
+            label="URL",
+         )
          el-table-column(
             prop="departments",
-               label="Departamentos",
-               :formatter="formatList"
-)
+            label="Departamentos",
+            :formatter="formatList"
+         )
          el-table-column(
             prop="tags",
-               label="Tags",
+            label="Tags",
             :formatter="formatList"
-               )
+         )
          el-table-column(
             label="Ações"
             align="right"
@@ -38,18 +38,18 @@ div
                      el-icon
                         CopyDocument()
                   div.actions-button(
-                     @click="handleVisualizar(scope.$index, scope.row)"
-                     :style="'background: #67c23a'"
-                  )
-                     el-icon
-                        View()
-                  div.actions-button(
                      v-if="isLeadership"
                      @click="handleEditar(scope.$index, scope.row)"
                      :style="'background: #4b53c6'"
                   )
                      el-icon
                         Edit()
+                  div.actions-button(
+                     @click="handleVisualizar(scope.$index, scope.row)"
+                     :style="'background: #67c23a'"
+                  )
+                     el-icon
+                        View()
                   div.actions-button(
                      v-if="isLeadership"
                      @click="handleExcluir(scope.$index, scope.row)"
@@ -96,6 +96,7 @@ export default {
    },
 
    async mounted() {
+      ElNotification.closeAll();
       ElNotification({
          title: 'Aguarde...',
          message: 'A coleta de membros pode levar alguns instantes',
@@ -104,6 +105,7 @@ export default {
       this.$store.commit('SET_SIDEBAR_OPTION', this.$route.name.toLowerCase())
       const res = await this.findAllLinks()
       this.dados = res.links
+      ElNotification.closeAll();
       ElNotification({
          title: 'Sucesso!',
          message: 'Lista de links coletada.',
@@ -150,6 +152,7 @@ export default {
       async salvar() {
          try {
             const res = await this.createLink(this.novoLink)
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: `Link ${res.link.name} foi cadastrado com sucesso`,
@@ -169,6 +172,7 @@ export default {
             })
             this.isEditar = false
             this.$store.commit('SET_MODAL', '')
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: `${res.link.name} foi editado com sucesso`,
@@ -196,6 +200,7 @@ export default {
       async excluir(index, row) {
          try {
             await this.deleteLink(row._id)
+            ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
                message: 'Link removido com sucesso',
@@ -247,6 +252,7 @@ export default {
          document.execCommand('copy');
          document.body.removeChild(input);
 
+         ElNotification.closeAll();
          ElNotification({
             title: 'Tudo certo!',
             message: `Link copiado para a área de tranferência`,
