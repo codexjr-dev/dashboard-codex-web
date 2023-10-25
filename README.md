@@ -39,7 +39,7 @@ Also in the project root, add a ".env" file and insert the following variables:
 VITE_API_BASE_URL_DEV=<The URL that will be used to run the application (for example, you can use "http://localhost:4444" to run locally)>
 ```
 
-Perhaps dependencies such as **dotenv** and **vite** inform you that it needs to be installed globally (on your machine).
+Perhaps dependencies such as **dotenv** and **vite**, informs you that it needs to be installed globally (on your machine).
 
 To do so, just listen to the following commands:
 
