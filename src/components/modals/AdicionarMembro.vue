@@ -95,7 +95,7 @@ div.modal-content
       el-row
          el-divider(
             content-position="left"
-            ) Cargos
+            ) *Cargos
          el-select(
             v-model="membro.role"
             @blur="validateRole"
