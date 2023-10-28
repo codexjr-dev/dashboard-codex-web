@@ -8,10 +8,13 @@ div.modal-content
       el-input(
 		  	placeholder="Nome"
 		  	v-model="projeto.name"
-        @blur="validateName"
-        :class="errorMessageName ? 'required-field': ''"
-        :disabled="isVisualizar"
-		  )
+        @blur="validate(this.projeto.name, 'setValidProjectName')"
+        :class="validProjectName ? '' : 'required-field'"
+        :disabled="isToDisable"
+      )
+      el-text.verify(
+        v-if="!validProjectName"
+      ) {{ errorMessage }}
     el-row
       el-divider(
         content-position="left"
@@ -98,21 +101,28 @@ div.modal-content
       el-input(
 		  	placeholder="Contato do cliente"
 		  	v-model="projeto.customer.contact"
-		  	v-mask="['(##)#####-####']"
-        :disabled="isVisualizar"
+        @blur="validate(this.projeto.customer.contact, 'setValidCustomerContact')"
+		  	:class="validCustomerContact ? '' : 'required-field'"
+        v-mask="['(##)#####-####']"
+        :disabled="isToDisable"
 		  )
+      el-text.verify(
+        v-if="!validCustomerContact"
+      ) {{ errorMessage }}
     el-row
       el-divider(
         content-position="left"
       ) <label className="required"> Nome do cliente </label>
       el-input(
-        type="textarea"
 		  	placeholder="Nome do cliente"
 		  	v-model="projeto.customer.name"
-        @blur="validateName(projeto.customer.name)"
-        :class="errorMessageName ? 'required-field': ''"
-        :disabled="isVisualizar"
+        @blur="validate(this.projeto.customer.name, 'setValidCustomerName')"
+        :class="validCustomerName ? '' : 'required-field'"
+        :disabled="isToDisable"
 		  )
+      el-text.verify(
+        v-if="!validCustomerName"
+      ) {{ errorMessage }}
 </template>
 
 <script>
@@ -137,30 +147,44 @@ export default {
       required: false,
       default: false
     },
-    errorMessageName: String,
+    validProjectName: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    validCustomerName: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    validCustomerContact: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    errorMessage: String,
   },
 
   watch: {
-      invalid: {
-         immediate: false,
-
-         handler(newValue) {
-            if(newValue) {
-               this.validateName(newValue);
-            }
-         }
+    invalid: {
+      immediate: false,
+      handler(newValue) {
+        if(newValue) {
+          this.validate();
+        }
       }
-   },
+    }
+  },
 
   
   data() {
     return {
       customDatePicker: {
-            boundariesPadding: 0,
-            gpuAcceleration: false
+        boundariesPadding: 0,
+        gpuAcceleration: false
       },
       dados: [],
-      errorMessageName: "",
+      errorMessage: "* Campo obrigatório",
       tags: [
         {
           id: 1,
@@ -202,20 +226,29 @@ export default {
       findById: 'findById',
     }),
 
-    validateName(name) {
-      if(!name || name.trim().length == 0) {
-        this.errorMessageName = 'Campo obrigatório *'
-        this.$emit("setValidName", false);
+    validate(field, setValidField) {
+      if(!field || field.trim().length == 0) {
+        this.$emit(setValidField, false);
       } else {
-        this.errorMessageName = '';
-        this.$emit("setValidName", true);
+        this.$emit(setValidField, true);
       }
     },
   },
+
+  computed: {
+    isLeadership() {
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+      },
+
+      isToDisable() {
+         return this.isVisualizar || !this.isLeadership;
+      },
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+
 .modal-content {
   display: flex;
   gap: 2%;
@@ -235,8 +268,22 @@ export default {
   margin-bottom: 1vh;
 }
 
+.message {
+  margin-top: 10px;
+}
+
+.required-field {
+   --el-border-color: #EB4C4F;
+}
+
 .required:after {
   content: " *";
   color: #EB4C4F;
+}
+
+.verify {
+  color: #EB4C4F;
+  margin-top: 5px;
+  margin-left: 15px;
 }
 </style>

@@ -78,7 +78,15 @@ div
       adicionar-projeto(
          :titleModal='titleModal'
          :isVisualizar="isVisualizar"
+         :invalid="invalid"
          :projeto="novoProjeto"
+         :validProjectName="validProjectName"
+         :validCustomerName="validCustomerName"
+         :validCustomerContact="validCustomerContact"
+         @setValid="setValid"
+         @setValidProjectName="setValidProjectName"
+         @setValidCustomerName="setValidCustomerName"
+         @setValidCustomerContact="setValidCustomerContact"
       )
       template(
          #footer
@@ -107,7 +115,8 @@ div
       )
          span.dialog-footer
             el-button(
-               @click="saveNews()"
+               v-if="!isVisualizar"
+               @click="isEditar ? editar() : salvar()"
                type="primary"
                color="#4b53c6"
             ) Salvar
@@ -153,6 +162,10 @@ export default {
 
    data() {
       return {
+         valid: false,
+         validProjectName: true,
+         validCustomerName: true,
+         validCustomerContact: true,
          dados: [],
          novoProjeto: cloneDeep(models.emptyProject),
          newsToBeCreated: cloneDeep(models.emptyNews),
@@ -215,16 +228,16 @@ export default {
       handleClose() {
          this.$store.commit('SET_MODAL', '')
       },
-
+      
       getTeamMembersId(row) {
          return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
       },
-
+      
       async getProjetos() {
          const res = await this.findAllProjects()
          this.dados = res.projects
       },
-
+      
       handleViewProject(index, row) {
          this.isVisualizar = true
          row.team = this.getTeamMembersId(row);
@@ -232,7 +245,7 @@ export default {
          this.titleModal = row.name
          this.$store.commit('SET_MODAL', 'projeto')
       },
-
+      
       handleEditProject(index, row) {
          this.isVisualizar = false
          this.isEditar = true
@@ -242,18 +255,45 @@ export default {
          this.$store.commit('SET_MODAL', 'projeto')
       },
 
+      setValid(value) {
+         this.valid = value;
+      },
+
+      setValidProjectName(value) {
+         this.validProjectName = value;
+      },
+
+      setValidCustomerName(value) {
+         this.validCustomerName = value;
+      },
+
+      setValidCustomerContact(value) {
+         this.validCustomerContact = value;
+      },
+      
+      setValidation() {
+         if(!this.valid || !this.validProjectName || !this.validCustomerName || !this.validCustomerContact) {
+            this.invalid = true;
+         } else {
+            this.invalid = false;
+         }
+         return (this.valid && this.validProjectName && this.validCustomerName && this.validCustomerContact);
+      },
+
       async salvar() {
          try {
-            const res = await this.createProject(this.novoProjeto)
-            ElNotification.closeAll()
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
-               type: 'success',
-            })
-            this.$store.commit('SET_MODAL', '')
-            await this.getProjetos()
-            this.novoProjeto = cloneDeep(models.emptyProject)
+            if (this.setValidation()) {
+               const res = await this.createProject(this.novoProjeto)
+               ElNotification.closeAll()
+               ElNotification({
+                  title: 'Tudo certo!',
+                  message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
+                  type: 'success',
+               })
+               this.$store.commit('SET_MODAL', '')
+               await this.getProjetos()
+               this.novoProjeto = cloneDeep(models.emptyProject)
+            }
          } catch (error) { }
       },
 
