@@ -7,7 +7,7 @@
             <el-table-column prop="team" label="Time" :formatter="formatList" :width="210">
                <template v-slot="scope">
                   <div v-for="(member, index) in scope.row.team" :key="index">
-                     <div>{{ member.name }}</div>
+                     <div>{{ index + 1 }}) {{ member.name }}</div>
                   </div>
                </template>
             </el-table-column>
