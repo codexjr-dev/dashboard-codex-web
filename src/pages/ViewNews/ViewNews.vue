@@ -65,7 +65,7 @@ div.page
       :before-close="handleClose"
       :title="'Editar a atualização:'"
       @close="closeModal"
-      v-model="showModalAddNews"
+      v-model="showAddNewsModal"
    )
       add-news-modal(
          :titleModal='"Editar Atualização:"'

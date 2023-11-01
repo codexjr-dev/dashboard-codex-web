@@ -13,7 +13,8 @@ export default {
    },
 
    async mounted() {
-      this.$store.commit('SHOW_SIDEBAR', false);
+      this.configHeader();
+
       this.userInfo = await this.getUserInfo();
 
       ElNotification.closeAll();
@@ -63,8 +64,8 @@ export default {
       isLeadership() {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
       },
-      showModalAddNews() {
-         return this.$store.state.header.modal === 'add_news'
+      showAddNewsModal() {
+         return this.$store.state.page.modalContext === 'ADD_NEWS'
       },
    },
 
@@ -75,6 +76,10 @@ export default {
          updateNews: 'updateNews',
          deleteNews: 'deleteNews',
       }),
+
+      configHeader() {
+         this.$store.commit('SHOW_SIDEBAR', false);
+      },
 
       isNewsOwner(row) {
          return this.userInfo.sub._id === row.member._id;
@@ -138,14 +143,14 @@ export default {
             image: row.image,
             updateLink: row.updateLink
          };
-         this.$store.commit('SET_MODAL', 'add_news')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_NEWS');
       },
 
       async editNews() {
          try {
             const data = await this.updateNews(this.editableNews);
 
-            this.$store.commit('SET_MODAL', '');
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
 
             ElNotification.closeAll();
             ElNotification({
@@ -163,7 +168,7 @@ export default {
       },
 
       async closeModal() {
-         this.$store.commit('SET_MODAL', '');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
 
          this.editableNews = cloneDeep({ news: models.emptyNews });
 
@@ -174,7 +179,7 @@ export default {
       },
 
       handleClose() {
-         this.$store.commit('SET_MODAL', '');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
       },
 
       handleDeleteNews(index, row) {

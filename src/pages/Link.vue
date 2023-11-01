@@ -61,7 +61,7 @@ div
       :before-close="handleClose"
       :title="titleModal"
       @close="closeModal"
-      v-model="showModal"
+      v-model="showAddLinkModal"
    )
       adicionar-link(
          :titleModal='titleModal'
@@ -102,7 +102,9 @@ export default {
          message: 'A coleta de membros pode levar alguns instantes',
          type: 'warning',
       });
-      this.$store.commit('SET_SIDEBAR_OPTION', this.$route.name.toLowerCase())
+
+      this.configHeader();
+
       const res = await this.findAllLinks()
       this.dados = res.links
       ElNotification.closeAll();
@@ -124,8 +126,8 @@ export default {
    },
 
    computed: {
-      showModal() {
-         return this.$store.state.header.modal === 'link'
+      showAddLinkModal() {
+         return this.$store.state.page.modalContext === 'ADD_LINK';
       },
       isLeadership() {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
@@ -139,6 +141,13 @@ export default {
          deleteLink: 'deleteLink',
          updateLink: 'updateLink'
       }),
+
+      configHeader() {
+         this.$store.commit('SET_PAGE_CONTEXT', 'link');
+         this.$store.commit('SET_HEADER_TITLE', 'Links');
+         this.$store.commit('SET_HEADER_BUTTON_VISIBILITY', true);
+         this.$store.commit('SHOW_SIDEBAR', true);
+      },
 
       formatDate(row, column, prop) {
          return Utils.formatDate(prop)
@@ -158,7 +167,7 @@ export default {
                message: `Link ${res.link.name} foi cadastrado com sucesso`,
                type: 'success',
             })
-            this.$store.commit('SET_MODAL', '')
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
             await this.getLinks()
             this.novoLink = cloneDeep(models.emptyLink)
          } catch (error) { }
@@ -171,7 +180,7 @@ export default {
                id: this.novoLink._id,
             })
             this.isEditar = false
-            this.$store.commit('SET_MODAL', '')
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
             ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
@@ -187,14 +196,14 @@ export default {
          this.isEditar = true
          this.novoLink = row
          this.titleModal = 'Editar link'
-         this.$store.commit('SET_MODAL', 'link')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_LINK');
       },
 
       handleVisualizar(index, row) {
          this.isVisualizar = true
          this.novoLink = row
          this.titleModal = row.name
-         this.$store.commit('SET_MODAL', 'link')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_LINK');
       },
 
       async excluir(index, row) {
@@ -228,7 +237,7 @@ export default {
          this.isVisualizar = false
          this.isEditar = false
          this.novoLink = cloneDeep(models.emptyLink)
-         this.$store.commit('SET_MODAL', '')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
       },
 
       formatList(row, column, prop) {

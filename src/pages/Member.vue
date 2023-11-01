@@ -56,7 +56,7 @@ div
       :before-close="handleClose"
       :title="titleModal"
       @close="closeModal"
-      v-model="showModal"
+      v-model="showAddMemberModal"
    )
       adicionar-membro(
          :titleModal='titleModal'
@@ -94,7 +94,6 @@ import AdicionarMembro from '@/components/modals/AdicionarMembro.vue'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
-import moment from 'moment';
 
 export default {
    name: 'Member',
@@ -110,7 +109,9 @@ export default {
          message: 'A coleta de membros pode levar alguns instantes',
          type: 'warning',
       });
-      this.$store.commit('SET_SIDEBAR_OPTION', this.$route.name.toLowerCase())
+
+      this.configHeader();
+
       await this.getMembros()
       ElNotification.closeAll();
       ElNotification({
@@ -141,16 +142,16 @@ export default {
          errorEmailInUse: "",
       }
    },
-   
+
    computed: {
-      showModal() {
-         return this.$store.state.header.modal === 'membro'
+      showAddMemberModal() {
+         return this.$store.state.page.modalContext === 'ADD_MEMBER';
       },
       isLeadership() {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
       }
    },
-   
+
    methods: {
       ...mapActions({
          findAllMembers: 'findAllMembers',
@@ -158,29 +159,36 @@ export default {
          updateMember: 'updateMember',
          deleteMember: 'deleteMember'
       }),
-      
+
+      configHeader() {
+         this.$store.commit('SET_PAGE_CONTEXT', 'member');
+         this.$store.commit('SET_HEADER_TITLE', 'Membros');
+         this.$store.commit('SET_HEADER_BUTTON_VISIBILITY', true);
+         this.$store.commit('SHOW_SIDEBAR', true);
+      },
+
       async getMembros() {
          const res = await this.findAllMembers()
          res.status === 404 ?
-         localStorage.clear() || this.$router.push({ name: 'Home' })
-         : this.dados = res.members
+            localStorage.clear() || this.$router.push({ name: 'Home' })
+            : this.dados = res.members
       },
-      
+
       isThisMemberLoged(member) {
          return member.loged;
       },
-      
+
       formatDate(row, column, prop) {
          return Utils.formatDate(prop);
       },
-      
+
       closeModal() {
          this.isVisualizar = false
          this.isEditar = false
          this.novoMembro = cloneDeep(models.emptyMember)
-         this.$store.commit('SET_MODAL', '')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
       },
-      
+
       setValid(value) {
          this.valid = value;
       },
@@ -222,16 +230,16 @@ export default {
       },
 
       setValidation() {
-         if(!this.valid || !this.validName || !this.validBirth || !this.validEntry 
-         || !this.validDepartament || !this.validRole || !this.validEmail || !this.validPassword
-         || !this.validConfirm || !this.validPhone) {
+         if (!this.valid || !this.validName || !this.validBirth || !this.validEntry
+            || !this.validDepartament || !this.validRole || !this.validEmail || !this.validPassword
+            || !this.validConfirm || !this.validPhone) {
             this.invalid = true;
          } else {
             this.invalid = false;
          }
-         return (this.valid && this.validName && this.validBirth && this.validEntry 
-         && this.validDepartament && this.validRole && this.validEmail && this.validPassword
-         && this.validConfirm && this.validPhone);
+         return (this.valid && this.validName && this.validBirth && this.validEntry
+            && this.validDepartament && this.validRole && this.validEmail && this.validPassword
+            && this.validConfirm && this.validPhone);
       },
 
       async salvar() {
@@ -244,7 +252,7 @@ export default {
                   message: `${res.member.name} foi cadastrado com sucesso`,
                   type: 'success',
                })
-               this.$store.commit('SET_MODAL', '')
+               this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
                await this.getMembros()
                this.novoMembro = cloneDeep(models.emptyMember);
             }
@@ -296,7 +304,7 @@ export default {
          try {
             const res = await this.updateMember({ membro: this.novoMembro, id: this.novoMembro._id })
             this.isEditar = false
-            this.$store.commit('SET_MODAL', '')
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_MEMBER');
             ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
@@ -312,18 +320,18 @@ export default {
          this.isEditar = true
          this.novoMembro = row
          this.titleModal = 'Editar Membro'
-         this.$store.commit('SET_MODAL', 'membro')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_MEMBER');
       },
 
       handleVisualizar(index, row) {
          this.isVisualizar = true
          this.novoMembro = row
          this.titleModal = row.name
-         this.$store.commit('SET_MODAL', 'membro')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_MEMBER');
       },
 
       handleClose() {
-         this.$store.commit('SET_MODAL', '')
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
       }
    }
 }
