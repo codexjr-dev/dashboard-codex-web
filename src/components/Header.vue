@@ -57,11 +57,11 @@ export default {
    methods: {
       openModal() {
          if (this.isMember) {
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_MEMBER')
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_MEMBER')
          } else if (this.isProject) {
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_PROJECT')
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_PROJECT')
          } else if (this.isLink) {
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_LINK')
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_LINK')
          }
       }
    },

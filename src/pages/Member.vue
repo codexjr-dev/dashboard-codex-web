@@ -145,7 +145,7 @@ export default {
 
    computed: {
       showAddMemberModal() {
-         return this.$store.state.page.modalContext === 'ADD_MEMBER';
+         return this.$store.state.page.modalContext === 'ADD_OR_EDIT_';
       },
       isLeadership() {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
@@ -304,7 +304,7 @@ export default {
          try {
             const res = await this.updateMember({ membro: this.novoMembro, id: this.novoMembro._id })
             this.isEditar = false
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_MEMBER');
+            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_');
             ElNotification.closeAll();
             ElNotification({
                title: 'Tudo certo!',
@@ -320,14 +320,14 @@ export default {
          this.isEditar = true
          this.novoMembro = row
          this.titleModal = 'Editar Membro'
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_MEMBER');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_');
       },
 
       handleVisualizar(index, row) {
          this.isVisualizar = true
          this.novoMembro = row
          this.titleModal = row.name
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_MEMBER');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_');
       },
 
       handleClose() {

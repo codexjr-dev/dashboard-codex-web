@@ -127,7 +127,7 @@ export default {
 
    computed: {
       showAddLinkModal() {
-         return this.$store.state.page.modalContext === 'ADD_LINK';
+         return this.$store.state.page.modalContext === 'ADD_OR_EDIT_LINK';
       },
       isLeadership() {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
@@ -196,14 +196,14 @@ export default {
          this.isEditar = true
          this.novoLink = row
          this.titleModal = 'Editar link'
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_LINK');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_LINK');
       },
 
       handleVisualizar(index, row) {
          this.isVisualizar = true
          this.novoLink = row
          this.titleModal = row.name
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_LINK');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_LINK');
       },
 
       async excluir(index, row) {

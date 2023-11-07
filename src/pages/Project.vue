@@ -131,7 +131,7 @@ export default {
 
    computed: {
       showAddProjectModal() {
-         return this.$store.state.page.modalContext === 'ADD_PROJECT';
+         return this.$store.state.page.modalContext === 'ADD_OR_EDIT_PROJECT';
       },
       showAddNewsModal() {
          return this.$store.state.page.modalContext === 'ADD_NEWS';
@@ -203,7 +203,7 @@ export default {
          row.team = this.getTeamMembersId(row);
          this.novoProjeto = row
          this.titleModal = row.name
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_PROJECT');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_PROJECT');
       },
 
       handleEditProject(index, row) {
@@ -212,7 +212,7 @@ export default {
          row.team = this.getTeamMembersId(row);
          this.novoProjeto = row
          this.titleModal = 'Editar projeto'
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_PROJECT');
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_PROJECT');
       },
 
       async salvar() {
