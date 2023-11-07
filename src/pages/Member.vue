@@ -53,13 +53,12 @@ div
    el-dialog(
       fullscreen=true
       center
-      :before-close="handleClose"
+      :before-close="closeModalWithoutRequest"
       :title="titleModal"
       @close="closeModal"
       v-model="showAddMemberModal"
    )
       adicionar-membro(
-         :titleModal='titleModal'
          :isVisualizar="isVisualizar"
          :invalid="invalid"
          :membro="novoMembro"
@@ -103,8 +102,7 @@ export default {
    },
 
    async mounted() {
-      ElNotification.closeAll();
-      ElNotification({
+      this.sendNotification({
          title: 'Aguarde...',
          message: 'A coleta de membros pode levar alguns instantes',
          type: 'warning',
@@ -112,9 +110,9 @@ export default {
 
       this.configHeader();
 
-      await this.getMembros()
-      ElNotification.closeAll();
-      ElNotification({
+      await this.getMembers();
+
+      this.sendNotification({
          title: 'Sucesso!',
          message: 'Lista de membros coletada.',
          type: 'success',
@@ -145,10 +143,10 @@ export default {
 
    computed: {
       showAddMemberModal() {
-         return this.$store.state.page.modalContext === 'ADD_OR_EDIT_';
+         return this.$store.state.page.modalContext === 'ADD_OR_EDIT_MEMBER';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
       }
    },
 
@@ -167,11 +165,11 @@ export default {
          this.$store.commit('SHOW_SIDEBAR', true);
       },
 
-      async getMembros() {
-         const res = await this.findAllMembers()
+      async getMembers() {
+         const res = await this.findAllMembers();
          res.status === 404 ?
             localStorage.clear() || this.$router.push({ name: 'Home' })
-            : this.dados = res.members
+            : this.dados = res.members;
       },
 
       isThisMemberLoged(member) {
@@ -180,13 +178,6 @@ export default {
 
       formatDate(row, column, prop) {
          return Utils.formatDate(prop);
-      },
-
-      closeModal() {
-         this.isVisualizar = false
-         this.isEditar = false
-         this.novoMembro = cloneDeep(models.emptyMember)
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
       },
 
       setValid(value) {
@@ -246,15 +237,14 @@ export default {
          try {
             if (this.setValidation()) {
                const res = await this.createMember(this.novoMembro)
-               ElNotification.closeAll();
-               ElNotification({
+
+               this.sendNotification({
                   title: 'Tudo certo!',
                   message: `${res.member.name} foi cadastrado com sucesso`,
                   type: 'success',
-               })
-               this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-               await this.getMembros()
-               this.novoMembro = cloneDeep(models.emptyMember);
+               });
+
+               this.closeModal();
             }
          } catch (error) {
             if (error.response.data.error === 'EMAIL_ALREADY_IN_USE') {
@@ -268,21 +258,22 @@ export default {
       async excluir(index, row) {
          try {
             await this.deleteMember(row._id)
-            ElNotification.closeAll();
-            ElNotification({
+
+            this.sendNotification({
                title: 'Tudo certo!',
                message: 'Membro removido com sucesso',
                type: 'success',
-            })
-            await this.getMembros()
+            });
+
+            await this.getMembers()
          } catch (error) {
-            ElNotification.closeAll();
-            ElNotification({
+            this.sendNotification({
                title: 'Falha ao remover membro!',
                message: 'A presença de ao menos uma liderança na EJ é obrigatória.',
                type: 'error',
-            })
-            await this.getMembros()
+            });
+
+            await this.getMembers()
          }
       },
 
@@ -302,36 +293,53 @@ export default {
 
       async editar() {
          try {
-            const res = await this.updateMember({ membro: this.novoMembro, id: this.novoMembro._id })
-            this.isEditar = false
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_');
-            ElNotification.closeAll();
-            ElNotification({
+            const res = await this.updateMember({ membro: this.novoMembro, id: this.novoMembro._id });
+
+            this.sendNotification({
                title: 'Tudo certo!',
                message: `${res.member.name} foi editado com sucesso`,
                type: 'success',
-            })
-            await this.getMembros()
-            this.novoMembro = cloneDeep(models.emptyMember)
+            });
+
+            this.closeModal();
          } catch (error) { }
       },
 
       handleEditar(index, row) {
-         this.isEditar = true
-         this.novoMembro = row
-         this.titleModal = 'Editar Membro'
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_');
+         this.openModal(index, row, 'ADD_OR_EDIT_MEMBER');
+         this.isVisualizar = false;
+         this.isEditar = true;
+         this.titleModal = 'Editar Membro';
       },
 
       handleVisualizar(index, row) {
-         this.isVisualizar = true
-         this.novoMembro = row
-         this.titleModal = row.name
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_');
+         this.openModal(index, row, 'ADD_OR_EDIT_MEMBER');
+         this.isVisualizar = true;
+         this.isEditar = false;
+         this.titleModal = row.name;
       },
 
-      handleClose() {
+      openModal(index, row, modal) {
+         this.novoMembro = row;
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
+      },
+
+      async closeModal() {
+         this.closeModalWithoutRequest();
+         await this.getMembers();
+      },
+
+      closeModalWithoutRequest() {
+         this.isVisualizar = false;
+         this.isEditar = false;
+         this.titleModal = 'Adicionar Membro';
+         this.novoMembro = cloneDeep(models.emptyMember);
          this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
+      },
+
+      sendNotification(notification) {
+         ElNotification.closeAll();
+         ElNotification(notification);
       }
    }
 }

@@ -16,7 +16,7 @@
             <el-table-column label="Ações" align="right">
                <template v-slot="scope">
                   <div class="actions">
-                     <div class="actions-button" v-if="isLeadership || onTeam(scope.row)"
+                     <div class="actions-button" v-if="isLeadership || isOnTeam(scope.row)"
                         @click="handleAddNews(scope.$index, scope.row)" :style="'background: #A8CDE8'">
                         <el-icon>
                            <Plus />
@@ -52,20 +52,22 @@
          </el-table>
       </el-card>
 
-      <el-dialog center :before-close="handleClose" :title="titleModal" @close="closeModal" v-model="showAddProjectModal"
-         fullscreen="true">
+      <el-dialog center :before-close="closeModalWithoutRequest" :title="titleModal" @close="closeModal"
+         v-model="showAddProjectModal" fullscreen="true">
          <adicionar-projeto :titleModal="titleModal" :isVisualizar="isVisualizar"
             :projeto="novoProjeto"></adicionar-projeto>
          <template v-slot:footer>
             <span class="dialog-footer">
-               <el-button v-if="!isVisualizar" @click="isEditar ? editar() : salvar()" type="primary" color="#4b53c6">
+               <el-button v-if="!isVisualizar" @click="isEditar ? editProject() : saveProject()" type="primary"
+                  color="#4b53c6">
                   Salvar
                </el-button>
             </span>
          </template>
       </el-dialog>
 
-      <el-dialog center :before-close="handleClose" :title="titleModal" @close="closeModal" v-model="showAddNewsModal">
+      <el-dialog center :before-close="closeModalWithoutRequest" :title="titleModal" @close="closeModal"
+         v-model="showAddNewsModal">
          <add-news-modal :titleModal="titleModal" :news="newsToBeCreated"></add-news-modal>
          <template v-slot:footer>
             <span class="dialog-footer">
@@ -97,8 +99,7 @@ export default {
    },
 
    async mounted() {
-      ElNotification.closeAll()
-      ElNotification({
+      this.sendNotification({
          title: 'Aguarde...',
          message: 'A coleta de projetos pode levar alguns instantes',
          type: 'warning',
@@ -107,10 +108,9 @@ export default {
       this.configHeader();
 
       this.userInfo = await this.getUserInfo();
-      const res = await this.findAllProjects()
-      this.dados = res.projects
-      ElNotification.closeAll();
-      ElNotification({
+      this.getProjects();
+
+      this.sendNotification({
          title: 'Sucesso!',
          message: 'Lista de projetos coletada.',
          type: 'success',
@@ -126,7 +126,7 @@ export default {
          isEditar: false,
          isVisualizar: false,
          userInfo: {}
-      }
+      };
    },
 
    computed: {
@@ -137,7 +137,7 @@ export default {
          return this.$store.state.page.modalContext === 'ADD_NEWS';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
       }
    },
 
@@ -158,7 +158,7 @@ export default {
          this.$store.commit('SHOW_SIDEBAR', true);
       },
 
-      onTeam(row) {
+      isOnTeam(row) {
          return this.getTeamMembersId(row).includes(this.userInfo.sub._id);
       },
 
@@ -167,111 +167,32 @@ export default {
       },
 
       formatList(row, column, prop) {
-         let listFormated = '';
-         prop.forEach((item, index) => {
-            if (index !== prop.length - 1)
-               listFormated += item.name + ', ';
-            else
-               listFormated += item.name;
-         });
-         return listFormated;
-      },
-
-      async closeModal() {
-         this.isVisualizar = false
-         this.isEditar = false
-         this.novoProjeto = cloneDeep(models.emptyProject)
-         await this.getProjetos()
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-      },
-
-      handleClose() {
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
+         return prop.map((item, index) => (index !== prop.length - 1) ? item + ', ' : item).join('');
       },
 
       getTeamMembersId(row) {
          return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
       },
 
-      async getProjetos() {
-         const res = await this.findAllProjects()
-         this.dados = res.projects
+      async getProjects() {
+         const res = await this.findAllProjects();
+         this.dados = res.projects;
       },
 
       handleViewProject(index, row) {
-         this.isVisualizar = true
+         this.isVisualizar = true;
+         this.isEditar = false;
+         this.titleModal = row.name;
          row.team = this.getTeamMembersId(row);
-         this.novoProjeto = row
-         this.titleModal = row.name
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_PROJECT');
+         this.openModal(index, row, 'ADD_OR_EDIT_PROJECT');
       },
 
       handleEditProject(index, row) {
-         this.isVisualizar = false
-         this.isEditar = true
-         row.team = this.getTeamMembersId(row);
-         this.novoProjeto = row
+         this.isVisualizar = false;
+         this.isEditar = true;
          this.titleModal = 'Editar projeto'
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_PROJECT');
-      },
-
-      async salvar() {
-         try {
-            const res = await this.createProject(this.novoProjeto)
-            ElNotification.closeAll()
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
-               type: 'success',
-            })
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-            await this.getProjetos()
-            this.novoProjeto = cloneDeep(models.emptyProject)
-         } catch (error) { }
-      },
-
-      async editar() {
-         try {
-            const res = await this.updateProject({ project: this.novoProjeto, id: this.novoProjeto._id })
-            this.isEditar = false
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-            ElNotification.closeAll()
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `${res.project.name} foi editado com sucesso`,
-               type: 'success',
-            })
-            await this.getProjetos()
-            this.novoProjeto = cloneDeep(models.emptyProject)
-         } catch (error) { }
-      },
-
-      handleAddNews(index, row) {
-         this.novoProjeto = row;
-         this.titleModal = 'Adicionar atualização'
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_NEWS')
-      },
-
-      async saveNews() {
-         try {
-            await this.createNews({ news: this.newsToBeCreated, projectId: this.novoProjeto._id })
-            ElNotification.closeAll()
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `Atualização criada com sucesso!`,
-               type: 'success',
-            });
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-            this.novoProjeto = cloneDeep(models.emptyProject);
-            this.newsToBeCreated = cloneDeep(models.emptyNews);
-         } catch (error) { }
-      },
-
-      async handleViewNews(index, row) {
-         this.$router.push({
-            name: 'ViewNews',
-            params: { projectId: JSON.stringify(row._id) }
-         });
+         row.team = this.getTeamMembersId(row);
+         this.openModal(index, row, 'ADD_OR_EDIT_PROJECT');
       },
 
       handleDeleteProject(index, row) {
@@ -284,23 +205,102 @@ export default {
                type: 'warning',
             }
          ).then(async () => {
-            await this.excluir(index, row)
-         })
+            await this.deleteAndGetAllProjects(index, row)
+         });
       },
 
-      async excluir(index, row) {
+      async handleViewNews(index, row) {
+         this.$router.push({
+            name: 'ViewNews',
+            params: { projectId: JSON.stringify(row._id) }
+         });
+      },
+
+      handleAddNews(index, row) {
+         this.novoProjeto = row;
+         this.titleModal = 'Adicionar atualização'
+         this.openModal(index, row, 'ADD_NEWS');
+      },
+
+      async saveProject() {
          try {
-            await this.deleteProject(row._id)
-            ElNotification.closeAll()
-            ElNotification({
+            const res = await this.createProject(this.novoProjeto)
+
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
+               type: 'success',
+            });
+
+            this.closeModal();
+         } catch (error) { }
+      },
+
+      async editProject() {
+         try {
+            const res = await this.updateProject({ project: this.novoProjeto, id: this.novoProjeto._id });
+
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `${res.project.name} foi editado com sucesso`,
+               type: 'success',
+            });
+
+            this.closeModal();
+         } catch (error) { }
+      },
+
+      async saveNews() {
+         try {
+            await this.createNews({ news: this.newsToBeCreated, projectId: this.novoProjeto._id });
+
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `Atualização criada com sucesso!`,
+               type: 'success',
+            });
+
+            this.closeModal();
+         } catch (error) { }
+      },
+
+      async deleteAndGetAllProjects(index, row) {
+         try {
+            await this.deleteProject(row._id);
+
+            this.sendNotification({
                title: 'Tudo certo!',
                message: 'Projeto removido com sucesso',
                type: 'success',
-            })
-            await this.getProjetos()
+            });
+
+            await this.getProjects();
          } catch (error) { }
       },
-   }
+
+      openModal(index, row, modal) {
+         this.novoProjeto = row;
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
+      },
+
+      async closeModal() {
+         this.closeModalWithoutRequest();
+         await this.getProjects();
+      },
+
+      closeModalWithoutRequest() {
+         this.isVisualizar = false;
+         this.isEditar = false;
+         this.novoProjeto = cloneDeep(models.emptyProject);
+         this.newsToBeCreated = cloneDeep(models.emptyNews);
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
+      },
+
+      sendNotification(notification) {
+         ElNotification.closeAll();
+         ElNotification(notification);
+      }
+   },
 }
 </script>
 

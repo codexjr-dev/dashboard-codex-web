@@ -18,11 +18,17 @@ div
             label="Departamentos",
             :formatter="formatList"
          )
+            template(v-slot="scope")
+               div(v-for="(prop, index) in scope.row.departments", :key="index")
+                  div {{ index + 1 }}) {{ prop }}
          el-table-column(
             prop="tags",
             label="Tags",
             :formatter="formatList"
          )
+            template(v-slot="scope")
+               div(v-for="(prop, index) in scope.row.tags", :key="index")
+                  div {{ index + 1 }}) {{ prop }}
          el-table-column(
             label="Ações"
             align="right"
@@ -58,7 +64,7 @@ div
                      el-icon
                         DeleteFilled()
    el-dialog(
-      :before-close="handleClose"
+      :before-close="closeModalWithoutRequest"
       :title="titleModal"
       @close="closeModal"
       v-model="showAddLinkModal"
@@ -96,19 +102,17 @@ export default {
    },
 
    async mounted() {
-      ElNotification.closeAll();
-      ElNotification({
+      this.configHeader();
+
+      this.sendNotification({
          title: 'Aguarde...',
          message: 'A coleta de membros pode levar alguns instantes',
          type: 'warning',
       });
 
-      this.configHeader();
+      this.getLinks();
 
-      const res = await this.findAllLinks()
-      this.dados = res.links
-      ElNotification.closeAll();
-      ElNotification({
+      this.sendNotification({
          title: 'Sucesso!',
          message: 'Lista de links coletada.',
          type: 'success',
@@ -122,7 +126,7 @@ export default {
          titleModal: 'Adicionar Link',
          isEditar: false,
          isVisualizar: false,
-      }
+      };
    },
 
    computed: {
@@ -130,7 +134,7 @@ export default {
          return this.$store.state.page.modalContext === 'ADD_OR_EDIT_LINK';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
       }
    },
 
@@ -150,26 +154,25 @@ export default {
       },
 
       formatDate(row, column, prop) {
-         return Utils.formatDate(prop)
+         return Utils.formatDate(prop);
       },
 
       async getLinks() {
-         const res = await this.findAllLinks()
-         this.dados = res.links
+         const res = await this.findAllLinks();
+         this.dados = res.links;
       },
 
       async salvar() {
          try {
-            const res = await this.createLink(this.novoLink)
-            ElNotification.closeAll();
-            ElNotification({
+            const res = await this.createLink(this.novoLink);
+
+            this.sendNotification({
                title: 'Tudo certo!',
                message: `Link ${res.link.name} foi cadastrado com sucesso`,
                type: 'success',
-            })
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-            await this.getLinks()
-            this.novoLink = cloneDeep(models.emptyLink)
+            });
+
+            this.closeModal();
          } catch (error) { }
       },
 
@@ -178,44 +181,43 @@ export default {
             const res = await this.updateLink({
                link: this.novoLink,
                id: this.novoLink._id,
-            })
-            this.isEditar = false
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-            ElNotification.closeAll();
-            ElNotification({
+            });
+
+            this.sendNotification({
                title: 'Tudo certo!',
                message: `${res.link.name} foi editado com sucesso`,
                type: 'success',
-            })
-            await this.getLinks()
-            this.novoLink = cloneDeep(models.emptyLink)
+            });
+
+            this.closeModal();
          } catch (error) { }
       },
 
       handleEditar(index, row) {
-         this.isEditar = true
-         this.novoLink = row
-         this.titleModal = 'Editar link'
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_LINK');
+         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
+         this.isVisualizar = false;
+         this.isEditar = true;
+         this.titleModal = 'Editar Link';
       },
 
       handleVisualizar(index, row) {
-         this.isVisualizar = true
-         this.novoLink = row
-         this.titleModal = row.name
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_OR_EDIT_LINK');
+         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
+         this.isVisualizar = true;
+         this.isEditar = false;
+         this.titleModal = row.name;
       },
 
       async excluir(index, row) {
          try {
-            await this.deleteLink(row._id)
-            ElNotification.closeAll();
-            ElNotification({
+            await this.deleteLink(row._id);
+
+            this.sendNotification({
                title: 'Tudo certo!',
                message: 'Link removido com sucesso',
                type: 'success',
-            })
-            await this.getLinks()
+            });
+
+            await this.getLinks();
          } catch (error) { }
       },
 
@@ -229,27 +231,12 @@ export default {
                type: 'warning',
             }
          ).then(async () => {
-            await this.excluir(index, row)
+            await this.excluir(index, row);
          })
-      },
-
-      handleClose() {
-         this.isVisualizar = false
-         this.isEditar = false
-         this.novoLink = cloneDeep(models.emptyLink)
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
       },
 
       formatList(row, column, prop) {
-         let listFormated = ''
-         prop.forEach((item, index) => {
-            if (index !== prop.length - 1) {
-               listFormated += item + ', '
-            } else {
-               listFormated += item
-            }
-         })
-         return listFormated
+         return prop.map((item, index) => (index !== prop.length - 1) ? item + ', ' : item).join('');
       },
 
       copyNick(row) {
@@ -261,12 +248,34 @@ export default {
          document.execCommand('copy');
          document.body.removeChild(input);
 
-         ElNotification.closeAll();
-         ElNotification({
+         this.sendNotification({
             title: 'Tudo certo!',
             message: `Link copiado para a área de tranferência`,
             type: 'success',
-         })
+         });
+      },
+
+      openModal(index, row, modal) {
+         this.novoMembro = row;
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
+      },
+
+      async closeModal() {
+         this.closeModalWithoutRequest();
+         await this.getLinks();
+      },
+
+      closeModalWithoutRequest() {
+         this.isVisualizar = false;
+         this.isEditar = false;
+         this.titleModal = 'Adicionar Link';
+         this.novoLink = cloneDeep(models.emptyLink);
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
+      },
+
+      sendNotification(notification) {
+         ElNotification.closeAll();
+         ElNotification(notification);
       }
    }
 }
