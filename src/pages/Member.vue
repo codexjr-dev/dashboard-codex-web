@@ -233,6 +233,34 @@ export default {
             && this.validConfirm && this.validPhone);
       },
 
+      handleEditar(index, row) {
+         this.openModal(index, row, 'ADD_OR_EDIT_MEMBER');
+         this.isVisualizar = false;
+         this.isEditar = true;
+         this.titleModal = 'Editar Membro';
+      },
+
+      handleVisualizar(index, row) {
+         this.openModal(index, row, 'ADD_OR_EDIT_MEMBER');
+         this.isVisualizar = true;
+         this.isEditar = false;
+         this.titleModal = row.name;
+      },
+
+      handleExcluir(index, row) {
+         ElMessageBox.confirm(
+            `Excluir membro ${row.name} do sistema?`,
+            'Atenção',
+            {
+               confirmButtonText: 'Excluir',
+               cancelButtonText: 'Cancelar',
+               type: 'warning',
+            }
+         ).then(async () => {
+            await this.excluir(index, row)
+         })
+      },
+
       async salvar() {
          try {
             if (this.setValidation()) {
@@ -255,6 +283,20 @@ export default {
          }
       },
 
+      async editar() {
+         try {
+            const res = await this.updateMember({ membro: this.novoMembro, id: this.novoMembro._id });
+
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `${res.member.name} foi editado com sucesso`,
+               type: 'success',
+            });
+
+            this.closeModal();
+         } catch (error) { }
+      },
+
       async excluir(index, row) {
          try {
             await this.deleteMember(row._id)
@@ -275,48 +317,6 @@ export default {
 
             await this.getMembers()
          }
-      },
-
-      handleExcluir(index, row) {
-         ElMessageBox.confirm(
-            `Excluir membro ${row.name} do sistema?`,
-            'Atenção',
-            {
-               confirmButtonText: 'Excluir',
-               cancelButtonText: 'Cancelar',
-               type: 'warning',
-            }
-         ).then(async () => {
-            await this.excluir(index, row)
-         })
-      },
-
-      async editar() {
-         try {
-            const res = await this.updateMember({ membro: this.novoMembro, id: this.novoMembro._id });
-
-            this.sendNotification({
-               title: 'Tudo certo!',
-               message: `${res.member.name} foi editado com sucesso`,
-               type: 'success',
-            });
-
-            this.closeModal();
-         } catch (error) { }
-      },
-
-      handleEditar(index, row) {
-         this.openModal(index, row, 'ADD_OR_EDIT_MEMBER');
-         this.isVisualizar = false;
-         this.isEditar = true;
-         this.titleModal = 'Editar Membro';
-      },
-
-      handleVisualizar(index, row) {
-         this.openModal(index, row, 'ADD_OR_EDIT_MEMBER');
-         this.isVisualizar = true;
-         this.isEditar = false;
-         this.titleModal = row.name;
       },
 
       openModal(index, row, modal) {

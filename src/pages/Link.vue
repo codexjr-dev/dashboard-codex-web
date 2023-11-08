@@ -166,6 +166,32 @@ export default {
          this.dados = res.links;
       },
 
+      handleEditar(index, row) {
+         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
+         this.isVisualizar = false; this.isEditar = true;
+         this.titleModal = 'Editar Link';
+      },
+
+      handleVisualizar(index, row) {
+         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
+         this.isVisualizar = true; this.isEditar = false;
+         this.titleModal = row.name;
+      },
+
+      handleExcluir(index, row) {
+         ElMessageBox.confirm(
+            `Excluir link ${row.name} do sistema?`,
+            'Atenção',
+            {
+               confirmButtonText: 'Excluir',
+               cancelButtonText: 'Cancelar',
+               type: 'warning',
+            }
+         ).then(async () => {
+            await this.excluir(index, row);
+         })
+      },
+
       async salvar() {
          try {
             const res = await this.createLink(this.novoLink);
@@ -197,20 +223,6 @@ export default {
          } catch (error) { }
       },
 
-      handleEditar(index, row) {
-         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
-         this.isVisualizar = false;
-         this.isEditar = true;
-         this.titleModal = 'Editar Link';
-      },
-
-      handleVisualizar(index, row) {
-         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
-         this.isVisualizar = true;
-         this.isEditar = false;
-         this.titleModal = row.name;
-      },
-
       async excluir(index, row) {
          try {
             await this.deleteLink(row._id);
@@ -223,20 +235,6 @@ export default {
 
             await this.getLinks();
          } catch (error) { }
-      },
-
-      handleExcluir(index, row) {
-         ElMessageBox.confirm(
-            `Excluir link ${row.name} do sistema?`,
-            'Atenção',
-            {
-               confirmButtonText: 'Excluir',
-               cancelButtonText: 'Cancelar',
-               type: 'warning',
-            }
-         ).then(async () => {
-            await this.excluir(index, row);
-         })
       },
 
       copyNick(row) {
