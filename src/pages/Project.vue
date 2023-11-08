@@ -8,7 +8,6 @@ div
          el-table-column(
             prop="name",
             label="Nome",
-            :width="150"
          )
          el-table-column(
             prop="description",
@@ -18,7 +17,6 @@ div
             prop="team",
             label="Time",
             :formatter="formatList"
-            :width="210"
          )
          el-table-column(
             prop="startDate",
@@ -69,24 +67,23 @@ div
                         DeleteFilled()
    el-dialog(
       center
+      fullscreen=true
       :before-close="handleClose"
       :title="titleModal"
       @close="closeModal"
       v-model="showModal"
-      fullscreen=true
    )
       adicionar-projeto(
          :titleModal='titleModal'
          :isVisualizar="isVisualizar"
          :invalid="invalid"
          :projeto="novoProjeto"
-         :validProjectName="validProjectName"
-         :validCustomerName="validCustomerName"
-         :validCustomerContact="validCustomerContact"
          @setValid="setValid"
          @setValidProjectName="setValidProjectName"
          @setValidCustomerName="setValidCustomerName"
-         @setValidCustomerContact="setValidCustomerContact"
+         @setValidCustomerPhone="setValidCustomerPhone"
+         @setValidProjectContractLink="setValidProjectContractLink"
+         @setValidProjectDescription="setValidProjectDescription"
       )
       template(
          #footer
@@ -163,9 +160,11 @@ export default {
    data() {
       return {
          valid: false,
-         validProjectName: true,
-         validCustomerName: true,
-         validCustomerContact: true,
+         validProjectName: false,
+         validCustomerName: false,
+         validCustomerPhone: false,
+         validProjectContractLink: false,
+         validProjectDescription:false,
          dados: [],
          novoProjeto: cloneDeep(models.emptyProject),
          newsToBeCreated: cloneDeep(models.emptyNews),
@@ -267,17 +266,27 @@ export default {
          this.validCustomerName = value;
       },
 
-      setValidCustomerContact(value) {
-         this.validCustomerContact = value;
+      setValidCustomerPhone(value) {
+         this.validCustomerPhone = value;
+      },
+
+      setValidProjectContractLink(value) {
+         this.validProjectContractLink = value;
+      },
+
+      setValidProjectDescription(value) {
+         this.validProjectDescription = value;
       },
       
       setValidation() {
-         if(!this.valid || !this.validProjectName || !this.validCustomerName || !this.validCustomerContact) {
+         if(!this.valid || !this.validProjectName || !this.validCustomerName || !this.validCustomerPhone 
+         || !validProjectContractLink || !validProjectDescription) {
             this.invalid = true;
          } else {
             this.invalid = false;
          }
-         return (this.valid && this.validProjectName && this.validCustomerName && this.validCustomerContact);
+         return (this.valid && this.validProjectName && this.validCustomerName && this.validCustomerPhone 
+         && this.validProjectContractLink && validProjectDescription);
       },
 
       async salvar() {
@@ -294,7 +303,7 @@ export default {
                await this.getProjetos()
                this.novoProjeto = cloneDeep(models.emptyProject)
             }
-         } catch (error) { }
+         } catch (error) {}
       },
 
       async editar() {
