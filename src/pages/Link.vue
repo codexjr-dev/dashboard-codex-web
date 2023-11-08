@@ -157,6 +157,10 @@ export default {
          return Utils.formatDate(prop);
       },
 
+      formatList(row, column, prop) {
+         return Utils.formatListToCard(row, column, prop);
+      },
+
       async getLinks() {
          const res = await this.findAllLinks();
          this.dados = res.links;
@@ -235,10 +239,6 @@ export default {
          })
       },
 
-      formatList(row, column, prop) {
-         return prop.map((item, index) => (index !== prop.length - 1) ? item + ', ' : item).join('');
-      },
-
       copyNick(row) {
          let input = document.createElement("input");
          input.value = `${row.url}`;
@@ -256,7 +256,7 @@ export default {
       },
 
       openModal(index, row, modal) {
-         this.novoMembro = row;
+         this.novoLink = row;
          this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
       },
 
