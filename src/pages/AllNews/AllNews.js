@@ -17,8 +17,7 @@ export default {
 
       this.userInfo = await this.getUserInfo();
 
-      ElNotification.closeAll();
-      ElNotification({
+      this.sendNotification({
          title: 'Aguarde...',
          message: 'A coleta de atualizações pode levar alguns instantes',
          type: 'warning',
@@ -31,23 +30,21 @@ export default {
          this.newsData = data.news;
          this.title = this.getTitle();
 
-         ElNotification.closeAll();
-         ElNotification({
+         this.sendNotification({
             title: 'Sucesso!',
             message: 'Atualizações do Projeto coletadas.',
             type: 'success',
          });
       } else {
-         ElNotification.closeAll();
-         ElNotification({
+         this.sendNotification({
             title: 'O projeto informado não existe',
             message: 'Você será redirecionado(a) para a Página de Projetos',
             type: 'warning',
-         })
+         });
          setTimeout(() => {
             this.$router.push({ name: 'Project' });
          }, "3000");
-      }
+      };
    },
 
    data() {
@@ -56,15 +53,15 @@ export default {
          userInfo: {},
          title: '',
          editableNews: cloneDeep(models.emptyNews)
-      }
+      };
    },
 
    computed: {
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
       },
-      showModalAddNews() {
-         return this.$store.state.page.modalContext === 'ADD_NEWS'
+      showEditNewsModal() {
+         return this.$store.state.page.modalContext === 'EDIT_NEWS';
       },
    },
 
@@ -96,7 +93,11 @@ export default {
       },
 
       getTitle() {
-         return `Atualizações da EJ: ${this.userInfo.sub.ej.name}`
+         return `Atualizações da EJ: ${this.userInfo.sub.ej.name}`;
+      },
+
+      handleClosePage() {
+         this.$router.push({ name: 'Project' });
       },
 
       handleCopyLink(index, row) {
@@ -109,78 +110,33 @@ export default {
             document.execCommand('copy');
             document.body.removeChild(input);
 
-            ElNotification.closeAll();
-            ElNotification({
+            this.sendNotification({
                title: 'Tudo certo!',
                message: `Link copiado para a área de tranferência`,
                type: 'success',
-            })
+            });
          } else {
-            ElNotification.closeAll();
-            ElNotification({
+            this.sendNotification({
                title: 'Operação não realizada.',
                message: `A atualização não possui um URL adicional.`,
                type: 'warning',
-            })
-         }
+            });
+         };
       },
 
       async handleDownloadImage(index, row) {
-         ElNotification.closeAll();
-         ElNotification({
+         this.sendNotification({
             title: 'Operação não realizada.',
             message: `Essa funcionalidade está em desenvolvimento.`,
             type: 'info',
-         })
+         });
       },
 
       handleEditNews(index, row) {
-         this.editableNews = {
-            _id: row._id,
-            description: row.description,
-            image: row.image,
-            updateLink: row.updateLink
-         };
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', 'ADD_NEWS');
+         this.openModal(index, row, 'EDIT_NEWS');
       },
 
-      async editNews() {
-         try {
-            const data = await this.updateNews(this.editableNews);
-
-            this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-
-            ElNotification.closeAll();
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `Atualização editada com sucesso.`,
-               type: 'success',
-            });
-
-            if (data && data.status !== 500) {
-               this.newsData = data.news
-            };
-
-            this.editableNews = cloneDeep(models.emptyNews);
-         } catch (error) { }
-      },
-
-      async closeModal() {
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-
-         this.editableNews = cloneDeep({ news: models.emptyNews });
-
-         const data = await this.getAllNews();
-         if (data && data.status !== 500) {
-            this.newsData = data.news
-         }
-      },
-
-      handleClose() {
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-      },
-
-      handleDeleteNews(index, row) {
+      async handleDeleteNews(index, row) {
          ElMessageBox.confirm(
             `<b>Excluir atualização do sistema?</b><br><br>
             <b>Autor(a):</b> ${row.member.name}<br>
@@ -196,36 +152,72 @@ export default {
                type: 'warning',
             }
          ).then(async () => {
-            await this.deleteThisNews(index, row)
-         })
+            await this.deleteThisNews(index, row);
+            await this.closeModal();
+         });
+      },
+
+      async editNews() {
+         try {
+            await this.updateNews(this.editableNews);
+
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `Atualização editada com sucesso.`,
+               type: 'success',
+            });
+
+            this.closeModal();
+         } catch (error) { };
       },
 
       async deleteThisNews(index, row) {
          try {
-            const data = await this.deleteNews({ projectId: row.project, newsId: row._id });
+            this.deleteNews({ projectId: row.project._id, newsId: row._id });
 
-            ElNotification.closeAll();
-            ElNotification({
+            this.sendNotification({
                title: 'Tudo certo!',
                message: 'Atualização removida com sucesso',
                type: 'success',
             });
 
-            if (data && data.status !== 500) {
-               this.newsData = data.news
-            }
+            this.closeModal();
          } catch (error) {
-            ElNotification.closeAll();
-            ElNotification({
+            this.sendNotification({
                title: 'Operação não realizada.',
                message: 'Ocorreu algum erro ao deletar a atualização.',
                type: 'error',
-            })
-         }
+            });
+         };
       },
 
-      handleClosePage() {
-         this.$router.push({ name: 'Project' });
+      openModal(index, row, modal) {
+         this.editableNews = {
+            _id: row._id,
+            description: row.description,
+            image: row.image,
+            updateLink: row.updateLink
+         };
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
       },
+
+      async closeModal() {
+         this.closeModalWithoutRequest();
+
+         const data = await this.getAllNews();
+         if (data && data.status !== 500) {
+            this.newsData = data.news;
+         };
+      },
+
+      closeModalWithoutRequest() {
+         this.editableNews = cloneDeep({ news: models.emptyNews });
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
+      },
+
+      sendNotification(notification) {
+         ElNotification.closeAll();
+         ElNotification(notification);
+      }
    }
 }

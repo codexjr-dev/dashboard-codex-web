@@ -63,10 +63,10 @@ div.page
                            DeleteFilled()
    el-dialog(
       center
-      :before-close="handleClose"
+      :before-close="closeModalWithoutRequest"
       :title="'Editar a atualização:'"
       @close="closeModal"
-      v-model="showModalAddNews"
+      v-model="showEditNewsModal"
    )
       add-news-modal(
          :titleModal='"Editar Atualização:"'
