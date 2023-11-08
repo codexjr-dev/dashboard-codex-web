@@ -165,6 +165,10 @@ export default {
          this.$store.commit('SHOW_SIDEBAR', true);
       },
 
+      formatDate(row, column, prop) {
+         return Utils.formatDate(prop);
+      },
+
       async getMembers() {
          const res = await this.findAllMembers();
          res.status === 404 ?
@@ -174,10 +178,6 @@ export default {
 
       isThisMemberLoged(member) {
          return member.loged;
-      },
-
-      formatDate(row, column, prop) {
-         return Utils.formatDate(prop);
       },
 
       setValid(value) {
