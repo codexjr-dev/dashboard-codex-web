@@ -158,25 +158,25 @@ export default {
          this.$store.commit('SHOW_SIDEBAR', true);
       },
 
-      isOnTeam(row) {
-         return this.getTeamMembersId(row).includes(this.userInfo.sub._id);
-      },
-
       formatDate(row, column, prop) {
          return Utils.formatDate(prop);
       },
 
       formatList(row, column, prop) {
-         return prop.map((item, index) => (index !== prop.length - 1) ? item + ', ' : item).join('');
-      },
-
-      getTeamMembersId(row) {
-         return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
+         return Utils.formatListToCard(row, column, prop);
       },
 
       async getProjects() {
          const res = await this.findAllProjects();
          this.dados = res.projects;
+      },
+
+      isOnTeam(row) {
+         return this.getTeamMembersId(row).includes(this.userInfo.sub._id);
+      },
+
+      getTeamMembersId(row) {
+         return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
       },
 
       handleViewProject(index, row) {
