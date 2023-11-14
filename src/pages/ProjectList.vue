@@ -91,7 +91,7 @@ import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
 
 export default {
-   name: 'Project',
+   name: 'ProjectList',
 
    components: {
       AdicionarProjeto,
