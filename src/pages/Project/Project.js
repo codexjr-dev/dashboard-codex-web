@@ -19,6 +19,7 @@ export default {
         if(project) {
             this.project = project;
             this.title = this.getTitle();
+            this.description = this.getDescription();
 
             this.sendNotification({
                 title: 'Sucesso!',
@@ -42,6 +43,7 @@ export default {
     data() {
         return {
             title: '',
+            description: '',
         }
     },
 
@@ -60,7 +62,7 @@ export default {
 
         async getProject() {
             const res = await this.findAllProjects();
-            
+
             const query = this.$route.params;
             const projectId = query.projectId ? JSON.parse(query.projectId) : null;
             
@@ -73,6 +75,10 @@ export default {
 
         getTitle() {
             return this.project.name;
+        },
+
+        getDescription() {
+            return this.project.description;
         },
 
         sendNotification(notification) {
