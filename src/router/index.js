@@ -4,6 +4,7 @@ import Cadastro from '../pages/Cadastro.vue'
 import Login from '../pages/Login.vue'
 import Member from '../pages/Member.vue'
 import ProjectList from '../pages/ProjectList.vue'
+import Project from '../pages/Project/Project.vue'
 import AllNews from '../pages/AllNews/AllNews.vue'
 import ViewNews from '../pages/ViewNews/ViewNews.vue'
 import Link from '../pages/Link.vue'
@@ -45,6 +46,14 @@ const routes = [
         name: 'ProjectList',
         path: '/projetos',
         component: ProjectList,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        name: 'Project',
+        path: '/project/:projectId',
+        component: Project,
         meta: {
             requiresAuth: true
         }
