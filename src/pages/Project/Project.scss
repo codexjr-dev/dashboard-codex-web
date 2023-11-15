@@ -1,3 +1,62 @@
 .page {
     position: relative;
 }
+
+.header {
+    position: relative;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2%;
+    padding: 1% 7% 0% 8%;
+}
+
+.title {
+    display: flex;
+    margin-top: 2%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: #808080;
+    text-align: center;
+    font-family: Open Sans;
+    font-size: 55px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.exit {
+    position: absolute;
+    right: 7%;
+    width: 54px;
+    height: 54px;
+ 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ 
+    cursor: pointer;
+ 
+    color: #FFF;
+    background-color: #F89898;
+    border-radius: 50%;
+    transition: color 0.3s ease;
+}
+
+.exitIcon {
+    width: auto;
+    height: auto;
+ 
+    svg {
+       height: 70%;
+       width: 70%;
+    }
+}
+
+.exit:hover {
+    color: #F89898;
+    background-color: #ccc;
+}
