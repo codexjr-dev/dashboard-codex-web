@@ -18,8 +18,7 @@ export default {
 
         if(project) {
             this.project = project;
-            this.title = this.getTitle();
-            this.description = this.getDescription();
+            this.customer = project.customer;
 
             this.sendNotification({
                 title: 'Sucesso!',
@@ -42,8 +41,8 @@ export default {
 
     data() {
         return {
-            title: '',
-            description: '',
+            project: [],
+            customer: []
         }
     },
 
@@ -73,13 +72,25 @@ export default {
             return project;
         },
 
-        getTitle() {
-            return this.project.name;
+        formatDate(prop) {
+            return Utils.formatDate(prop);
         },
 
-        getDescription() {
-            return this.project.description;
-        },
+        copyLink() {
+            let input = document.createElement("input");
+            input.value = `${this.project.contractLink}`;
+            document.body.appendChild(input);
+            input.select();
+   
+            document.execCommand('copy');
+            document.body.removeChild(input);
+   
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `Link copiado para a área de tranferência`,
+               type: 'success',
+            });
+         },
 
         sendNotification(notification) {
             ElNotification.closeAll();
