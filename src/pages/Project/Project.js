@@ -6,7 +6,7 @@ export default {
     name: 'Project',
 
     async mounted() {
-        this.configHeader();
+        this.configPage();
 
         this.sendNotification({
             title: 'Aguarde...',
@@ -51,7 +51,7 @@ export default {
             findAllProjects: 'findAllProjects'
         }),
 
-        configHeader() {
+        configPage() {
             this.$store.commit('SHOW_SIDEBAR', false);
         },
 
