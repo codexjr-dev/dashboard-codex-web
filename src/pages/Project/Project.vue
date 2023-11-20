@@ -13,7 +13,7 @@
                 <el-card class="externCol">
                     <p class="baseText rowTitle">Descrição</p>
                     <el-card class="projInfo">
-                        <el-scrollbar height="80px">
+                        <el-scrollbar max-height="80px">
                             <el-text class="baseText desc">
                                 {{ project.description }}
                             </el-text>
@@ -98,7 +98,7 @@
                             <el-text class="baseText custText">
                                 {{ customer.email }}
                             </el-text>
-                            <el-button class="copyButton" @click="copyLink">
+                            <el-button class="copyButton" @click="copyEmail">
                                 <el-icon><CopyDocument /></el-icon>
                             </el-button>
                         </div>

@@ -12,20 +12,19 @@ export default {
             title: 'Aguarde...',
             message: 'A coleta das informações do projeto pode levar alguns instantes',
             type: 'warning',
-         });
+        });
 
         const project = await this.getProject();
 
         if(project) {
             this.project = project;
-            console.log(project.team[0])
             this.customer = project.customer;
 
             this.sendNotification({
                 title: 'Sucesso!',
                 message: 'Informações do projeto coletadas',
                 type: 'success',
-             });
+            });
         } else {
             this.sendNotification({
                title: 'O projeto informado não existe',
@@ -58,7 +57,7 @@ export default {
 
         handleClosePage() {
             this.$router.push({ name: 'ProjectList' });
-         },
+        },
 
         async getProject() {
             const res = await this.findAllProjects();
@@ -91,7 +90,23 @@ export default {
                message: `Link copiado para a área de tranferência`,
                type: 'success',
             });
-         },
+        },
+
+        copyEmail() {
+            let input = document.createElement("input");
+            input.value = `${this.customer.email}`;
+            document.body.appendChild(input);
+            input.select();
+   
+            document.execCommand('copy');
+            document.body.removeChild(input);
+   
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `Link copiado para a área de tranferência`,
+               type: 'success',
+            });
+        },
 
         sendNotification(notification) {
             ElNotification.closeAll();
