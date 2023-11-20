@@ -12,6 +12,11 @@
     padding: 1% 7% 0% 8%;
 }
 
+.baseText {
+    font-family: Open Sans;
+    line-height: normal;
+}
+
 .title {
     display: flex;
     margin-top: 2%;
@@ -21,11 +26,9 @@
 
     color: #808080;
     text-align: center;
-    font-family: Open Sans;
     font-size: 55px;
     font-style: normal;
     font-weight: 700;
-    line-height: normal;
 }
 
 .exit {
@@ -85,18 +88,15 @@
 
     color: #808080;
     text-align: center;
-    font-family: Open Sans;
     font-size: 35px;
     font-style: normal;
     font-weight: 700;
-    line-height: normal;
 }
 
 .rowTitle {
-    margin-left: 1%;
+    margin-left: 4%;
     color: #808080;
     text-align: left;
-    font-family: Open Sans;
     font-size: 20px;
     font-style: normal;
     font-weight: 600;
@@ -104,6 +104,7 @@
 
 .externCol {
     height: 400px;
+    width: 400px;
     border-radius: 20px;
 }
 
@@ -114,13 +115,11 @@
     margin-left: 3%;
     margin-right: 3%;
     margin-bottom: 2%;
-    flex: 1;
     text-align: justify;
 }
 
 .desc {
     color: #808080;
-    font-family: Open Sans;
     font-size: 14px;
     font-style: italic;
     font-weight: 400;
@@ -136,11 +135,9 @@
     color: #808080;
     text-align: center;
     justify-content: center;
-    font-family: Open Sans;
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    line-height: normal;
 }
 
 .dateFormat {
@@ -154,11 +151,77 @@
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
     color: #808080;
     text-align: center;
-    font-family: Open Sans;
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    line-height: normal;
+}
+
+.tag {
+    display: inline;
+    justify-content: center;
+    padding: 5px 6px 5px 6px;
+    align-items: center;
+    border-radius: 16px;
+    margin-right: 2%;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.Backend {
+    background: #66A7DC;
+}
+
+.Frontend {
+    background: #66C2C6;
+}
+
+.Mobile {
+    background: #67C23A99;
+}
+
+.Wordpress {
+    background: #8F8CB899;
+}
+
+.Assessoria {
+    background: #C5449599;
+}
+
+.Treinamento {
+    background: #2A8C8999;
+}
+
+.memberName {
+    margin-left: 4%;
+    color: #808080;
+    text-align: left;
+    justify-content: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+}
+
+.userIcon {
+    width: auto;
+    height: auto;
+
+    svg {
+       height: 52px;
+       width: 48px;
+    }
+}
+
+.custText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #808080;
+    font-size: 16.15px;
+    font-style: normal;
+    font-weight: 400;
 }
 
 .copyButton {

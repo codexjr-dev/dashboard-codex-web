@@ -18,6 +18,7 @@ export default {
 
         if(project) {
             this.project = project;
+            console.log(project.team[0])
             this.customer = project.customer;
 
             this.sendNotification({
