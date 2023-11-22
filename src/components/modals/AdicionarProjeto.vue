@@ -8,13 +8,13 @@ div.modal-content
       el-input(
 		  	placeholder="Nome"
 		  	v-model="projeto.name"
-        @blur="validate(this.projeto.name, 'setValidProjectName', 'errorMessageName')"
-        :class="errorMessageName ? 'required-field' : ''"
+        @blur="validate(this.projeto.name, 'projectName')"
+        :class="this.errorMessages['projectName'] ? 'required-field' : ''"
         :disabled="isToDisable"
       )
       el-text.verify(
-        v-if="errorMessageName"
-      ) {{ errorMessageName }}
+        v-if="this.errorMessages['projectName']"
+      ) {{ this.errorMessages['projectName'] }}
     el-row
       el-divider(
         content-position="left"
@@ -22,13 +22,13 @@ div.modal-content
       el-input(
 		  	placeholder="Descrição"
 		  	v-model="projeto.description"
-        @blur="validate(this.projeto.description, 'setValidProjectDescription', 'errorMessageProjectDescription')"
-        :class="errorMessageProjectDescription ? 'required-field' : ''"
+        @blur="validate(this.projeto.description, 'projectDescription')"
+        :class="this.errorMessages['projectDescription'] ? 'required-field' : ''"
 		  	:disabled="isToDisable"
 		  )
       el-text.verify(
-        v-if="errorMessageProjectDescription"
-      ) {{ errorMessageProjectDescription }}
+        v-if="this.errorMessages['projectDescription']"
+      ) {{ this.errorMessages['projectDescription'] }}
     div.date-pickers
       el-row
         el-divider(
@@ -40,7 +40,7 @@ div.modal-content
 			  	value-format="YYYY-MM-DD"
 			  	style="width: 100%"
 			  	v-model="projeto.startDate"
-          :disabled="isVisualizar"
+          :disabled="isToDisable"
 			  )
       el-row
         el-divider(
@@ -97,13 +97,13 @@ div.modal-content
       el-input(
 		  	placeholder="Link do contrato"
 		  	v-model="projeto.contractLink"
-        @blur="validate(this.projeto.contractLink, 'setValidProjectContractLink', 'errorMessageProjectContractLink')"
-        :class="errorMessageProjectContractLink ? 'required-field' : ''"
+        @blur="validate(this.projeto.contractLink, 'projectContractLink')"
+        :class="this.errorMessages['projectContractLink'] ? 'required-field' : ''"
         :disabled="isToDisable"
 		  )
       el-text.verify(
-        v-if="errorMessageProjectContractLink"
-      ) {{ errorMessageProjectContractLink }}
+        v-if="this.errorMessages['projectContractLink']"
+      ) {{ this.errorMessages['projectContractLink'] }}
     el-row
       el-divider(
         content-position="left"
@@ -111,14 +111,14 @@ div.modal-content
       el-input(
 		  	placeholder="Contato do cliente"
 		  	v-model="projeto.customer.contact"
-        @blur="validate(this.projeto.customer.contact, 'setValidCustomerPhone', 'errorMessageCustomerPhone')"
-		  	:class="errorMessageCustomerPhone ? 'required-field' : ''"
+        @blur="validate(this.projeto.customer.contact, 'customerPhone')"
+		  	:class="this.errorMessages['customerPhone'] ? 'required-field' : ''"
         v-mask="['(##)#####-####']"
         :disabled="isToDisable"
 		  )
       el-text.verify(
-        v-if="errorMessageCustomerPhone"
-      ) {{ errorMessageCustomerPhone }}
+        v-if="this.errorMessages['customerPhone']"
+      ) {{ this.errorMessages['customerPhone'] }}
     el-row
       el-divider(
         content-position="left"
@@ -126,13 +126,13 @@ div.modal-content
       el-input(
 		  	placeholder="Nome do cliente"
 		  	v-model="projeto.customer.name"
-        @blur="validate(this.projeto.customer.name, 'setValidCustomerName', 'errorMessageCustomerName')"
-        :class="errorMessageCustomerName ? 'required-field' : ''"
+        @blur="validate(this.projeto.customer.name, 'customerName')"
+        :class="this.errorMessages['customerName'] ? 'required-field' : ''"
         :disabled="isToDisable"
 		  )
       el-text.verify(
-        v-if="errorMessageCustomerName"
-      ) {{ errorMessageCustomerName }}
+        v-if="this.errorMessages['customerName']"
+      ) {{ this.errorMessages['customerName'] }}
 </template>
 
 <script>
@@ -157,36 +157,6 @@ export default {
       required: false,
       default: false
     },
-    validProjectName: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    validCustomerName: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    validCustomerPhone: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    validProjectContractLink: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    validProjectDescription: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    errorMessageName: String,
-    errorMessageCustomerName: String,
-    errorMessageCustomerPhone: String,
-    errorMessageProjectContractLink: String,
-    errorMessageProjectDescription:String
   },
 
   watch: {
@@ -194,13 +164,16 @@ export default {
       immediate: false,
       handler(newValue) {
         if(newValue) {
-          this.validate();
+          this.validate(this.projeto.name, 'projectName');
+          this.validate(this.projeto.description, 'projectDescription');
+          this.validate(this.projeto.contractLink, 'projectContractLink');
+          this.validate(this.projeto.customer.contact, 'customerPhone');
+          this.validate(this.projeto.customer.name, 'customerName');
         }
       }
     }
   },
 
-  
   data() {
     return {
       customDatePicker: {
@@ -208,11 +181,13 @@ export default {
         gpuAcceleration: false
       },
       dados: [],
-      errorMessageName: "",
-      errorMessageCustomerName: "",
-      errorMessageCustomerPhone: "",
-      errorMessageProjectContractLink: "",
-      errorMessageProjectDescription: "",
+      errorMessages: {
+        projectName: "",
+        projectContractLink: "",
+        projectDescription: "",
+        customerName: "",
+        customerPhone: "",
+      },
       tags: [
         {
           id: 1,
@@ -254,17 +229,17 @@ export default {
       findById: 'findById',
     }),
 
-    setFieldErrorMessage(errorMessageField, message) {
-      this[errorMessageField] = message;
+    setFieldErrorMessage(fieldName, message) {
+      this.errorMessages[fieldName] = message;
     },
 
-    validate(field, setValidField, errorMessageField) {
+    validate(field, fieldName) {
       if(!field || field.trim().length == 0) {
-        this.$emit(setValidField, false);
-        this.setFieldErrorMessage(errorMessageField, "* Campo obrigatório");
+        this.$emit('setValidField', fieldName, false);
+        this.setFieldErrorMessage(fieldName, "* Campo obrigatório");
       } else {
-        this.$emit(setValidField, true);
-        this.setFieldErrorMessage(errorMessageField, "");
+        this.$emit('setValidField', fieldName, true);
+        this.setFieldErrorMessage(fieldName, "");
       }
     },
   },
@@ -273,7 +248,6 @@ export default {
     isLeadership() {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
       },
-
       isToDisable() {
          return this.isVisualizar || !this.isLeadership;
       },

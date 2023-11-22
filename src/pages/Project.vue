@@ -78,12 +78,7 @@ div
          :isVisualizar="isVisualizar"
          :invalid="invalid"
          :projeto="novoProjeto"
-         @setValid="setValid"
-         @setValidProjectName="setValidProjectName"
-         @setValidCustomerName="setValidCustomerName"
-         @setValidCustomerPhone="setValidCustomerPhone"
-         @setValidProjectContractLink="setValidProjectContractLink"
-         @setValidProjectDescription="setValidProjectDescription"
+         @setValidField="setValidField"
       )
       template(
          #footer
@@ -159,12 +154,14 @@ export default {
 
    data() {
       return {
-         valid: false,
-         validProjectName: false,
-         validCustomerName: false,
-         validCustomerPhone: false,
-         validProjectContractLink: false,
-         validProjectDescription:false,
+         invalid: false,         
+         validFields: {
+            projectName: false,
+            projectContractLink: false,
+            projectDescription: false,
+            customerName: false,
+            customerPhone: false,
+         },
          dados: [],
          novoProjeto: cloneDeep(models.emptyProject),
          newsToBeCreated: cloneDeep(models.emptyNews),
@@ -254,44 +251,22 @@ export default {
          this.$store.commit('SET_MODAL', 'projeto')
       },
 
-      setValid(value) {
-         this.valid = value;
+      setValidField(fieldName, value) {
+         this.validFields[fieldName] = value;
       },
 
-      setValidProjectName(value) {
-         this.validProjectName = value;
-      },
-
-      setValidCustomerName(value) {
-         this.validCustomerName = value;
-      },
-
-      setValidCustomerPhone(value) {
-         this.validCustomerPhone = value;
-      },
-
-      setValidProjectContractLink(value) {
-         this.validProjectContractLink = value;
-      },
-
-      setValidProjectDescription(value) {
-         this.validProjectDescription = value;
-      },
-      
-      setValidation() {
-         if(!this.valid || !this.validProjectName || !this.validCustomerName || !this.validCustomerPhone 
-         || !validProjectContractLink || !validProjectDescription) {
-            this.invalid = true;
-         } else {
-            this.invalid = false;
-         }
-         return (this.valid && this.validProjectName && this.validCustomerName && this.validCustomerPhone 
-         && this.validProjectContractLink && validProjectDescription);
+      isValid() {
+         let isValid = true;
+         Object.values(this.validFields).forEach(value => {
+            if (!value) isValid = false;
+         })
+         this.invalid = !isValid;
+         return isValid;
       },
 
       async salvar() {
          try {
-            if (this.setValidation()) {
+            if (this.isValid()) {
                const res = await this.createProject(this.novoProjeto)
                ElNotification.closeAll()
                ElNotification({
