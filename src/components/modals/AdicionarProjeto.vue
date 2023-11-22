@@ -30,9 +30,10 @@ div.modal-content
         v-if="this.errorMessages['projectDescription']"
       ) {{ this.errorMessages['projectDescription'] }}
     div.date-pickers
-      el-row
+      div.col
         el-divider(
           content-position="left"
+          style="margin-bottom: 10px"
         ) <label className="required"> Data de início </label>
         div(:class="this.errorMessages['projectStartDate'] ? 'required-field' : ''")
           el-date-picker(
@@ -42,15 +43,17 @@ div.modal-content
             style="width: 100%"
             v-model="projeto.startDate"
             @blur="validate(this.projeto.startDate, 'projectStartDate')"
+            @change="validate(this.projeto.startDate, 'projectStartDate')"
             :disabled="isToDisable"
           )
           div.message
             el-text.verify(
               v-if="this.errorMessages['projectStartDate']"
             ) {{ this.errorMessages['projectStartDate'] }}
-      el-row
+      div.col
         el-divider(
           content-position="left"
+          style="margin-bottom: 10px"
         ) <label className="required"> Data de término </label>
         div(:class="this.errorMessages['projectFinishDate'] ? 'required-field' : ''")
           el-date-picker(
@@ -60,6 +63,7 @@ div.modal-content
             style="width: 100%"
             v-model="projeto.finishDate"
             @blur="validate(this.projeto.finishDate, 'projectFinishDate')"
+            @change="validate(this.projeto.finishDate, 'projectFinishDate')"
             :disabled="isToDisable"
           )
           div.message
