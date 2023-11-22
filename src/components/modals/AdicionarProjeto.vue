@@ -34,26 +34,38 @@ div.modal-content
         el-divider(
           content-position="left"
         ) <label className="required"> Data de início </label>
-        el-date-picker(
-			  	placeholder="Data de início"
-			  	format="DD/MM/YYYY"
-			  	value-format="YYYY-MM-DD"
-			  	style="width: 100%"
-			  	v-model="projeto.startDate"
-          :disabled="isToDisable"
-			  )
+        div(:class="this.errorMessages['projectStartDate'] ? 'required-field' : ''")
+          el-date-picker(
+            placeholder="Data de início"
+            format="DD/MM/YYYY"
+            value-format="YYYY-MM-DD"
+            style="width: 100%"
+            v-model="projeto.startDate"
+            @blur="validate(this.projeto.startDate, 'projectStartDate')"
+            :disabled="isToDisable"
+          )
+          div.message
+            el-text.verify(
+              v-if="this.errorMessages['projectStartDate']"
+            ) {{ this.errorMessages['projectStartDate'] }}
       el-row
         el-divider(
           content-position="left"
         ) <label className="required"> Data de término </label>
-        el-date-picker(
-			  	placeholder="Data de finalização"
-			  	format="DD/MM/YYYY"
-			  	value-format="YYYY-MM-DD"
-			  	style="width: 100%"
-			  	v-model="projeto.finishDate"
-          :disabled="isVisualizar"
-			  )
+        div(:class="this.errorMessages['projectFinishDate'] ? 'required-field' : ''")
+          el-date-picker(
+            placeholder="Data de finalização"
+            format="DD/MM/YYYY"
+            value-format="YYYY-MM-DD"
+            style="width: 100%"
+            v-model="projeto.finishDate"
+            @blur="validate(this.projeto.finishDate, 'projectFinishDate')"
+            :disabled="isToDisable"
+          )
+          div.message
+            el-text.verify(
+              v-if="this.errorMessages['projectFinishDate']"
+            ) {{ this.errorMessages['projectFinishDate'] }}
     el-row
       el-divider(
         content-position="left"
@@ -63,7 +75,10 @@ div.modal-content
         v-model="projeto.tags"
         placeholder="Selecione tags"
         value-key="id"
-        :disabled="isVisualizar"
+        @blur="validateList(this.projeto.tags, 'projectTags')"
+        @change="validateList(this.projeto.tags, 'projectTags')"
+        :class="this.errorMessages['projectTags'] ? 'required-field' : ''"
+        :disabled="isToDisable"
       )
         el-option(
 		  		v-for="tag in tags",
@@ -71,6 +86,9 @@ div.modal-content
 		  		:label="tag.value",
 		  		:value="tag.value"
         )
+      el-text.verify(
+        v-if="this.errorMessages['projectTags']"
+      ) {{ this.errorMessages['projectTags'] }}
   div.col
     el-row
       el-divider(
@@ -81,7 +99,10 @@ div.modal-content
         v-model="projeto.team"
         placeholder="Selecione o time"
         value-key="id"
-        :disabled="isVisualizar"
+        @blur="validateList(this.projeto.team, 'projectTeam')"
+        @change="validateList(this.projeto.team, 'projectTeam')"
+        :class="this.errorMessages['projectTeam'] ? 'required-field' : ''"
+        :disabled="isToDisable"
         :fit-input-width="true"
       )
         el-option(
@@ -90,6 +111,9 @@ div.modal-content
 		  		:label="member.name",
 		  		:value="member._id"
         )
+      el-text.verify(
+        v-if="this.errorMessages['projectTeam']"
+      ) {{ this.errorMessages['projectTeam'] }}
     el-row
       el-divider(
         content-position="left"
@@ -167,6 +191,10 @@ export default {
           this.validate(this.projeto.name, 'projectName');
           this.validate(this.projeto.description, 'projectDescription');
           this.validate(this.projeto.contractLink, 'projectContractLink');
+          this.validate(this.projeto.startDate, 'projectStartDate');
+          this.validate(this.projeto.finishDate, 'projectFinishDate');
+          this.validateList(this.projeto.tags, 'projectTags');
+          this.validateList(this.projeto.team, 'projectTeam');
           this.validate(this.projeto.customer.contact, 'customerPhone');
           this.validate(this.projeto.customer.name, 'customerName');
         }
@@ -185,6 +213,10 @@ export default {
         projectName: "",
         projectContractLink: "",
         projectDescription: "",
+        projectStartDate: "",
+        projectFinishDate: "",
+        projectTags: "",
+        projectTeam: "",
         customerName: "",
         customerPhone: "",
       },
@@ -242,6 +274,16 @@ export default {
         this.setFieldErrorMessage(fieldName, "");
       }
     },
+
+    validateList(list, fieldName) {
+      if(!list || list.length == 0) {
+        this.$emit('setValidField', fieldName, false);
+        this.setFieldErrorMessage(fieldName, "* Campo obrigatório");
+      } else {
+        this.$emit('setValidField', fieldName, true);
+        this.setFieldErrorMessage(fieldName, "");
+      }
+    }
   },
 
   computed: {
@@ -277,11 +319,11 @@ export default {
 }
 
 .message {
-  margin-top: 10px;
+  margin-top: 21px;
 }
 
 .required-field {
-   --el-border-color: #EB4C4F;
+  --el-border-color: #EB4C4F;
 }
 
 .required:after {
