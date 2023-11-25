@@ -8,23 +8,28 @@ div
          el-table-column(
             prop="name",
             label="Nome",
+            width=340,
          )
          el-table-column(
             prop="email",
             label="Email",
+            width=340,
          )
          el-table-column(
             prop="role",
             label="Cargos",
+            width=200,
          )
          el-table-column(
             prop="birthDate",
             label="Data de nascimento",
             :formatter="formatDate"
+            width=160,
          )
          el-table-column(
             label="Ações"
             align="right"
+            width=300,
          )
             template(
                #default="scope"
