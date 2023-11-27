@@ -94,7 +94,7 @@ export default {
          if (this.isMember) {
             this.$router.push({ name: 'Member' })
          } else if (this.isProject) {
-            this.$router.push({ name: 'Project' })
+            this.$router.push({ name: 'ProjectList' })
          } else if (this.isLink) {
             this.$router.push({ name: 'Link' })
          } else if (this.isSettings) {

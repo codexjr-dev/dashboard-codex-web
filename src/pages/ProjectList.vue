@@ -91,7 +91,7 @@ import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
 
 export default {
-   name: 'Project',
+   name: 'ProjectList',
 
    components: {
       AdicionarProjeto,
@@ -179,12 +179,11 @@ export default {
          return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
       },
 
-      handleViewProject(index, row) {
-         this.isVisualizar = true;
-         this.isEditar = false;
-         this.titleModal = row.name;
-         row.team = this.getTeamMembersId(row);
-         this.openModal(index, row, 'ADD_OR_EDIT_PROJECT');
+      async handleViewProject(index, row) {
+         this.$router.push({
+            name: 'Project',
+            params: { projectId: JSON.stringify(row._id) }
+         });
       },
 
       handleEditProject(index, row) {
