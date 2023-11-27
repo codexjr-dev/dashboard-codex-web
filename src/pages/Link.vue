@@ -72,6 +72,7 @@ div
       adicionar-link(
          :titleModal='titleModal'
          :isVisualizar="isVisualizar"
+         :invalid="invalid"
          :link="novoLink"
       )
       template(
@@ -121,6 +122,13 @@ export default {
 
    data() {
       return {
+         invalid: false,
+         validFields: {
+            linkName: false,
+            linkUrl: false,
+            linkTags: false,
+            linkDepartments: false,
+         },
          dados: [],
          novoLink: cloneDeep(models.emptyLink),
          titleModal: 'Adicionar Link',
@@ -145,6 +153,19 @@ export default {
          deleteLink: 'deleteLink',
          updateLink: 'updateLink'
       }),
+
+      setValidField(fieldName, value) {
+         this.validFields[fieldName] = value;
+      },
+
+      isValid() {
+         let isValid = true;
+         Object.values(this.validFields).forEach(value => {
+            if (!value) isValid = false;
+         })
+         this.invalid = !isValid
+         return isValid;
+      },
 
       configHeader() {
          this.$store.commit('SET_PAGE_CONTEXT', 'link');
@@ -194,15 +215,15 @@ export default {
 
       async salvar() {
          try {
-            const res = await this.createLink(this.novoLink);
-
-            this.sendNotification({
-               title: 'Tudo certo!',
-               message: `Link ${res.link.name} foi cadastrado com sucesso`,
-               type: 'success',
-            });
-
-            this.closeModal();
+            if (this.isValid()) {
+               const res = await this.createLink(this.novoLink);
+               this.sendNotification({
+                  title: 'Tudo certo!',
+                  message: `Link ${res.link.name} foi cadastrado com sucesso`,
+                  type: 'success',
+                });
+               this.closeModal();
+            }
          } catch (error) { }
       },
 
