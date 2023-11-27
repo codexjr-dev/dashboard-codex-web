@@ -61,7 +61,7 @@ div.modal-content
 		  		:label="tag.value",
 		  		:value="tag.value"
         )
-  div.col
+
     el-row
       el-divider(
         content-position="left"
@@ -80,6 +80,8 @@ div.modal-content
 		  		:label="member.name",
 		  		:value="member._id"
         )
+  div.col
+    
     el-row
       el-divider(
         content-position="left"
@@ -97,6 +99,15 @@ div.modal-content
 		  	placeholder="Contato do cliente"
 		  	v-model="projeto.customer.contact"
 		  	v-mask="['(##)#####-####']"
+        :disabled="isVisualizar"
+		  )
+    el-row
+      el-divider(
+        content-position="left"
+      ) Email do cliente
+      el-input(
+		  	placeholder="Email do cliente"
+		  	v-model="projeto.customer.email"
         :disabled="isVisualizar"
 		  )
     el-row
