@@ -54,8 +54,8 @@
 
       <el-dialog center :before-close="closeModalWithoutRequest" :title="titleModal" @close="closeModal"
          v-model="showAddProjectModal" fullscreen="true">
-         <adicionar-projeto :titleModal="titleModal" :isVisualizar="isVisualizar"
-            :projeto="novoProjeto"></adicionar-projeto>
+         <adicionar-projeto :titleModal="titleModal" :isVisualizar="isVisualizar" :invalid="invalid" :projeto="novoProjeto"
+            @setValidField="setValidField"></adicionar-projeto>
          <template v-slot:footer>
             <span class="dialog-footer">
                <el-button v-if="!isVisualizar" @click="isEditar ? editProject() : saveProject()" type="primary"
@@ -125,7 +125,19 @@ export default {
          titleModal: 'Adicionar Projeto',
          isEditar: false,
          isVisualizar: false,
-         userInfo: {}
+         userInfo: {},
+         invalid: false,
+         validFields: {
+            projectName: false,
+            projectContractLink: false,
+            projectDescription: false,
+            projectStartDate: false,
+            projectFinishDate: false,
+            projectTags: false,
+            projectTeam: false,
+            customerName: false,
+            customerPhone: false,
+         },
       };
    },
 
@@ -223,16 +235,18 @@ export default {
 
       async saveProject() {
          try {
-            const res = await this.createProject(this.novoProjeto)
+            if (this.isValid()) {
+               const res = await this.createProject(this.novoProjeto)
 
-            this.sendNotification({
-               title: 'Tudo certo!',
-               message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
-               type: 'success',
-            });
+               this.sendNotification({
+                  title: 'Tudo certo!',
+                  message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
+                  type: 'success',
+               });
 
-            this.closeModal();
-         } catch (error) { }
+               this.closeModal();
+            };
+         } catch (error) { };
       },
 
       async editProject() {
@@ -298,7 +312,20 @@ export default {
       sendNotification(notification) {
          ElNotification.closeAll();
          ElNotification(notification);
-      }
+      },
+
+      setValidField(fieldName, value) {
+         this.validFields[fieldName] = value;
+      },
+
+      isValid() {
+         let isValid = true;
+         Object.values(this.validFields).forEach(value => {
+            if (!value) isValid = false;
+         })
+         this.invalid = !isValid;
+         return isValid;
+      },
    },
 }
 </script>

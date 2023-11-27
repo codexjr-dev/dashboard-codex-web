@@ -4,56 +4,85 @@ div.modal-content
     el-row
       el-divider(
         content-position="left"
-      ) Nome
+      ) <label className="required"> Nome </label>
       el-input(
 		  	placeholder="Nome"
 		  	v-model="projeto.name"
-        :disabled="isVisualizar"
-		  )
+        @blur="validate(this.projeto.name, 'projectName')"
+        :class="this.errorMessages['projectName'] ? 'required-field' : ''"
+        :disabled="isToDisable"
+      )
+      el-text.verify(
+        v-if="this.errorMessages['projectName']"
+      ) {{ this.errorMessages['projectName'] }}
     el-row
       el-divider(
         content-position="left"
-      ) Descrição
+      ) <label className="required"> Descrição </label>
       el-input(
 		  	placeholder="Descrição"
 		  	v-model="projeto.description"
-		  	:disabled="isVisualizar"
+        @blur="validate(this.projeto.description, 'projectDescription')"
+        :class="this.errorMessages['projectDescription'] ? 'required-field' : ''"
+		  	:disabled="isToDisable"
 		  )
+      el-text.verify(
+        v-if="this.errorMessages['projectDescription']"
+      ) {{ this.errorMessages['projectDescription'] }}
     div.date-pickers
-      el-row
+      div.col
         el-divider(
           content-position="left"
-        ) Data de início
-        el-date-picker(
-			  	placeholder="Data de início"
-			  	format="DD/MM/YYYY"
-			  	value-format="YYYY-MM-DD"
-			  	style="width: 100%"
-			  	v-model="projeto.startDate"
-          :disabled="isVisualizar"
-			  )
-      el-row
+          style="margin-bottom: 10px"
+        ) <label className="required"> Data de início </label>
+        div(:class="this.errorMessages['projectStartDate'] ? 'required-field' : ''")
+          el-date-picker(
+            placeholder="Data de início"
+            format="DD/MM/YYYY"
+            value-format="YYYY-MM-DD"
+            style="width: 100%"
+            v-model="projeto.startDate"
+            @blur="validate(this.projeto.startDate, 'projectStartDate')"
+            @change="validate(this.projeto.startDate, 'projectStartDate')"
+            :disabled="isToDisable"
+          )
+          div.message
+            el-text.verify(
+              v-if="this.errorMessages['projectStartDate']"
+            ) {{ this.errorMessages['projectStartDate'] }}
+      div.col
         el-divider(
           content-position="left"
-        ) Data de término
-        el-date-picker(
-			  	placeholder="Data de finalização"
-			  	format="DD/MM/YYYY"
-			  	value-format="YYYY-MM-DD"
-			  	style="width: 100%"
-			  	v-model="projeto.finishDate"
-          :disabled="isVisualizar"
-			  )
+          style="margin-bottom: 10px"
+        ) <label className="required"> Data de término </label>
+        div(:class="this.errorMessages['projectFinishDate'] ? 'required-field' : ''")
+          el-date-picker(
+            placeholder="Data de finalização"
+            format="DD/MM/YYYY"
+            value-format="YYYY-MM-DD"
+            style="width: 100%"
+            v-model="projeto.finishDate"
+            @blur="validate(this.projeto.finishDate, 'projectFinishDate')"
+            @change="validate(this.projeto.finishDate, 'projectFinishDate')"
+            :disabled="isToDisable"
+          )
+          div.message
+            el-text.verify(
+              v-if="this.errorMessages['projectFinishDate']"
+            ) {{ this.errorMessages['projectFinishDate'] }}
     el-row
       el-divider(
         content-position="left"
-      ) Tags
+      ) <label className="required"> Tags </label>
       el-select(
 		  	multiple
         v-model="projeto.tags"
         placeholder="Selecione tags"
         value-key="id"
-        :disabled="isVisualizar"
+        @blur="validateList(this.projeto.tags, 'projectTags')"
+        @change="validateList(this.projeto.tags, 'projectTags')"
+        :class="this.errorMessages['projectTags'] ? 'required-field' : ''"
+        :disabled="isToDisable"
       )
         el-option(
 		  		v-for="tag in tags",
@@ -61,17 +90,23 @@ div.modal-content
 		  		:label="tag.value",
 		  		:value="tag.value"
         )
+      el-text.verify(
+        v-if="this.errorMessages['projectTags']"
+      ) {{ this.errorMessages['projectTags'] }}
   div.col
     el-row
       el-divider(
         content-position="left"
-      ) Time
+      ) <label className="required"> Time </label>
       el-select(
 		  	multiple
         v-model="projeto.team"
         placeholder="Selecione o time"
         value-key="id"
-        :disabled="isVisualizar"
+        @blur="validateList(this.projeto.team, 'projectTeam')"
+        @change="validateList(this.projeto.team, 'projectTeam')"
+        :class="this.errorMessages['projectTeam'] ? 'required-field' : ''"
+        :disabled="isToDisable"
         :fit-input-width="true"
       )
         el-option(
@@ -80,35 +115,52 @@ div.modal-content
 		  		:label="member.name",
 		  		:value="member._id"
         )
+      el-text.verify(
+        v-if="this.errorMessages['projectTeam']"
+      ) {{ this.errorMessages['projectTeam'] }}
     el-row
       el-divider(
         content-position="left"
-      ) Link do contrato
+      ) <label className="required"> Link do contrato </label>
       el-input(
 		  	placeholder="Link do contrato"
 		  	v-model="projeto.contractLink"
-        :disabled="isVisualizar"
+        @blur="validate(this.projeto.contractLink, 'projectContractLink')"
+        :class="this.errorMessages['projectContractLink'] ? 'required-field' : ''"
+        :disabled="isToDisable"
 		  )
+      el-text.verify(
+        v-if="this.errorMessages['projectContractLink']"
+      ) {{ this.errorMessages['projectContractLink'] }}
     el-row
       el-divider(
         content-position="left"
-      ) Contato do cliente
+      ) <label className="required"> Contato do cliente </label>
       el-input(
 		  	placeholder="Contato do cliente"
 		  	v-model="projeto.customer.contact"
-		  	v-mask="['(##)#####-####']"
-        :disabled="isVisualizar"
+        @blur="validate(this.projeto.customer.contact, 'customerPhone')"
+		  	:class="this.errorMessages['customerPhone'] ? 'required-field' : ''"
+        v-mask="['(##)#####-####']"
+        :disabled="isToDisable"
 		  )
+      el-text.verify(
+        v-if="this.errorMessages['customerPhone']"
+      ) {{ this.errorMessages['customerPhone'] }}
     el-row
       el-divider(
         content-position="left"
-      ) Nome do cliente
+      ) <label className="required"> Nome do cliente </label>
       el-input(
-		  	v-model="projeto.customer.name"
-		  	type="textarea"
 		  	placeholder="Nome do cliente"
-        :disabled="isVisualizar"
+		  	v-model="projeto.customer.name"
+        @blur="validate(this.projeto.customer.name, 'customerName')"
+        :class="this.errorMessages['customerName'] ? 'required-field' : ''"
+        :disabled="isToDisable"
 		  )
+      el-text.verify(
+        v-if="this.errorMessages['customerName']"
+      ) {{ this.errorMessages['customerName'] }}
 </template>
 
 <script>
@@ -128,12 +180,50 @@ export default {
       required: false,
       default: false,
     },
+    invalid: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
   },
 
-  
+  watch: {
+    invalid: {
+      immediate: false,
+      handler(newValue) {
+        if(newValue) {
+          this.validate(this.projeto.name, 'projectName');
+          this.validate(this.projeto.description, 'projectDescription');
+          this.validate(this.projeto.contractLink, 'projectContractLink');
+          this.validate(this.projeto.startDate, 'projectStartDate');
+          this.validate(this.projeto.finishDate, 'projectFinishDate');
+          this.validateList(this.projeto.tags, 'projectTags');
+          this.validateList(this.projeto.team, 'projectTeam');
+          this.validate(this.projeto.customer.contact, 'customerPhone');
+          this.validate(this.projeto.customer.name, 'customerName');
+        }
+      }
+    }
+  },
+
   data() {
     return {
+      customDatePicker: {
+        boundariesPadding: 0,
+        gpuAcceleration: false
+      },
       dados: [],
+      errorMessages: {
+        projectName: "",
+        projectContractLink: "",
+        projectDescription: "",
+        projectStartDate: "",
+        projectFinishDate: "",
+        projectTags: "",
+        projectTeam: "",
+        customerName: "",
+        customerPhone: "",
+      },
       tags: [
         {
           id: 1,
@@ -174,11 +264,45 @@ export default {
 			findAllMembers: 'findAllMembers',
       findById: 'findById',
     }),
+
+    setFieldErrorMessage(fieldName, message) {
+      this.errorMessages[fieldName] = message;
+    },
+
+    validate(field, fieldName) {
+      if(!field || field.trim().length == 0) {
+        this.$emit('setValidField', fieldName, false);
+        this.setFieldErrorMessage(fieldName, "* Campo obrigatório");
+      } else {
+        this.$emit('setValidField', fieldName, true);
+        this.setFieldErrorMessage(fieldName, "");
+      }
+    },
+
+    validateList(list, fieldName) {
+      if(!list || list.length == 0) {
+        this.$emit('setValidField', fieldName, false);
+        this.setFieldErrorMessage(fieldName, "* Campo obrigatório");
+      } else {
+        this.$emit('setValidField', fieldName, true);
+        this.setFieldErrorMessage(fieldName, "");
+      }
+    }
   },
+
+  computed: {
+    isLeadership() {
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+      },
+      isToDisable() {
+         return this.isVisualizar || !this.isLeadership;
+      },
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+
 .modal-content {
   display: flex;
   gap: 2%;
@@ -196,5 +320,24 @@ export default {
   display: flex;
   gap: 2%;
   margin-bottom: 1vh;
+}
+
+.message {
+  margin-top: 21px;
+}
+
+.required-field {
+  --el-border-color: #EB4C4F;
+}
+
+.required:after {
+  content: " *";
+  color: #EB4C4F;
+}
+
+.verify {
+  color: #EB4C4F;
+  margin-top: 5px;
+  margin-left: 15px;
 }
 </style>
