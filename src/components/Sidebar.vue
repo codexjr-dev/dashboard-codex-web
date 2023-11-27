@@ -24,6 +24,13 @@ div.sidebar
          connection(:style="isLink ? 'color: white' : 'color: #808080'")
       span(v-if="!isLink") Links
    div.sidebar-button(
+      :style="isAllNews ? 'background: #4b53c6' : 'background: #e6e6e6'"
+      @click="handleOption('allnews')"
+   )
+      el-icon
+         list(:style="isAllNews ? 'color: white' : 'color: #808080'")
+      span(v-if="!isAllNews") Atualizações
+   div.sidebar-button(
       v-if="isLeadership"
       :style="isSettings ? 'background: #4b53c6' : 'background: #e6e6e6'"
       @click="handleNotifyUnderDevelopment('settings')"
@@ -54,16 +61,19 @@ export default {
 
    computed: {
       isMember() {
-         return this.$store.state.sidebar.activeOption === 'member'
+         return this.$store.state.page.context === 'member'
       },
       isProject() {
-         return this.$store.state.sidebar.activeOption === 'project'
+         return this.$store.state.page.context === 'project'
       },
       isLink() {
-         return this.$store.state.sidebar.activeOption === 'link'
+         return this.$store.state.page.context === 'link'
       },
       isSettings() {
-         return this.$store.state.sidebar.activeOption === 'settings'
+         return this.$store.state.page.context === 'settings'
+      },
+      isAllNews() {
+         return this.$store.state.page.context === 'allnews'
       },
       isLeadership() {
          return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
@@ -79,16 +89,18 @@ export default {
          userInfo: 'userInfo'
       }),
 
-      handleOption(option) {
-         this.$store.commit('SET_SIDEBAR_OPTION', option)
+      handleOption(context) {
+         this.$store.commit('SET_PAGE_CONTEXT', context);
          if (this.isMember) {
             this.$router.push({ name: 'Member' })
          } else if (this.isProject) {
-            this.$router.push({ name: 'Project' })
+            this.$router.push({ name: 'ProjectList' })
          } else if (this.isLink) {
             this.$router.push({ name: 'Link' })
          } else if (this.isSettings) {
             this.$router.push({ name: 'Settings' })
+         } else if (this.isAllNews) {
+            this.$router.push({ name: 'AllNews' })
          }
       },
 
@@ -140,9 +152,9 @@ export default {
 
    .sidebar-button {
       background: #e6e6e6;
-      height: 12%;
+      height: 10%;
       width: 65%;
-      font-size: 70%;
+      font-size: 60%;
       border-radius: 20px;
       display: flex;
       justify-content: center;
@@ -163,8 +175,8 @@ export default {
    }
 
    .el-icon {
-      width: 35%;
-      height: 56%;
+      width: 30%;
+      height: 52%;
 
       svg {
          height: 3em;

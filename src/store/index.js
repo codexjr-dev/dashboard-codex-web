@@ -3,33 +3,52 @@ import actions from './modules/actions'
 
 const store = createStore({
   state: {
-    sidebar: {
-      show: true,
-      activeOption: ''
+    page: {
+      context: '',
+      modalContext: '',
+
+      sidebar: {
+        show: true
+      },
+
+      header: {
+        title: '',
+        buttonVisibility: true,
+      },
     },
-    header: {
-      title: '',
-      modal: ''
-    },
+
     title: "Vuex Store",
     members: []
   },
+
   getters: {
     allMembers(state) {
       return state.members;
     }
   },
+
   mutations: {
-    SHOW_SIDEBAR(state, showSidebar) {
-      state.sidebar.show = showSidebar
-    },
-    SET_SIDEBAR_OPTION(state, option) {
-      state.sidebar.activeOption = option
-    },
-    SET_MODAL(state, option) {
-      state.header.modal = option
-    }
+      SET_PAGE_CONTEXT(state, context) {
+         state.page.context = context
+      },
+
+      SET_AND_SHOW_MODAL_CONTEXT(state, context) {
+         state.page.modalContext = context
+      },
+
+      SHOW_SIDEBAR(state, showSidebar) {
+         state.page.sidebar.show = showSidebar
+      },
+
+      SET_HEADER_TITLE(state, title) {
+         state.page.header.title = title
+      },
+      
+      SET_HEADER_BUTTON_VISIBILITY(state, visibility) {
+         state.page.header.buttonVisibility = visibility
+      },
   },
+
   actions: {
     ...actions
   }

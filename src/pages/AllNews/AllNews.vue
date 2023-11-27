@@ -1,10 +1,5 @@
 <template lang="pug">
 div.page
-   div.header
-      p.title() {{ title }}
-      a.exit(
-         @click="handleClosePage"
-      ) x
    div.content
       el-card
          el-table(
@@ -12,13 +7,19 @@ div.page
             stripe
          )
             el-table-column(
-               prop="member.name",
-               label="Membro",
-               :width="150"
+               prop="project.name",
+               label="Projeto",
+               :width="200"
             )
             el-table-column(
                prop="description",
                label="Descrição",
+               :width="350"
+            )
+            el-table-column(
+               prop="member.name",
+               label="Membro",
+               :width="150"
             )
             el-table-column(
                prop="createdAt",
@@ -81,9 +82,9 @@ div.page
                color="#4b53c6"
             ) Salvar
 </template>
-   
+      
 <script>
-import scriptModule from './ViewNews.js';
+import scriptModule from './AllNews.js';
 
 export default {
    name: scriptModule.name,
@@ -94,8 +95,8 @@ export default {
    methods: scriptModule.methods
 }
 </script>
-   
+      
 <style lang="scss" scoped>
-@import './ViewNews.scss';
+@import './AllNews.scss';
 </style>
-   
+      

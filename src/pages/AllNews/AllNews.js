@@ -6,7 +6,7 @@ import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
 
 export default {
-   name: 'ViewNews',
+   name: 'AllNews',
 
    components: {
       AddNewsModal
@@ -23,11 +23,11 @@ export default {
          type: 'warning',
       });
 
-      const data = await this.getNews();
+
+      const data = await this.getAllNews();
 
       if (data && data.status !== 500) {
          this.newsData = data.news;
-         this.projectData = data.project;
          this.title = this.getTitle();
 
          this.sendNotification({
@@ -44,13 +44,12 @@ export default {
          setTimeout(() => {
             this.$router.push({ name: 'ProjectList' });
          }, "3000");
-      }
+      };
    },
 
    data() {
       return {
          newsData: [],
-         projectData: {},
          userInfo: {},
          title: '',
          editableNews: cloneDeep(models.emptyNews)
@@ -69,25 +68,24 @@ export default {
    methods: {
       ...mapActions({
          getUserInfo: 'userInfo',
-         getNewsByProject: 'getNewsByProject',
+         getAllNewsByEj: 'getAllNewsByEj',
          updateNews: 'updateNews',
          deleteNews: 'deleteNews',
       }),
 
       configHeader() {
-         this.$store.commit('SHOW_SIDEBAR', false);
+         this.$store.commit('SET_PAGE_CONTEXT', 'allnews');
+         this.$store.commit('SET_HEADER_TITLE', 'Atualizações dos Projetos');
+         this.$store.commit('SET_HEADER_BUTTON_VISIBILITY', false);
+         this.$store.commit('SHOW_SIDEBAR', true);
       },
 
       isNewsOwner(row) {
          return this.userInfo.sub._id === row.member._id;
       },
 
-      async getNews() {
-         const query = this.$route.params;
-
-         const projectId = query.projectId ? JSON.parse(query.projectId) : null;
-
-         return projectId ? await this.getNewsByProject({ projectId: projectId }) : null;
+      async getAllNews() {
+         return await this.getAllNewsByEj() || null;
       },
 
       formatDate(row, column, prop) {
@@ -95,7 +93,7 @@ export default {
       },
 
       getTitle() {
-         return `Atualizações do projeto: ${this.projectData.name}`;
+         return `Atualizações da EJ: ${this.userInfo.sub.ej.name}`;
       },
 
       handleClosePage() {
@@ -123,7 +121,7 @@ export default {
                message: `A atualização não possui um URL adicional.`,
                type: 'warning',
             });
-         }
+         };
       },
 
       async handleDownloadImage(index, row) {
@@ -138,7 +136,7 @@ export default {
          this.openModal(index, row, 'EDIT_NEWS');
       },
 
-      handleDeleteNews(index, row) {
+      async handleDeleteNews(index, row) {
          ElMessageBox.confirm(
             `<b>Excluir atualização do sistema?</b><br><br>
             <b>Autor(a):</b> ${row.member.name}<br>
@@ -155,12 +153,13 @@ export default {
             }
          ).then(async () => {
             await this.deleteThisNews(index, row);
-         })
+            await this.closeModal();
+         });
       },
 
       async editNews() {
          try {
-            const data = await this.updateNews(this.editableNews);
+            await this.updateNews(this.editableNews);
 
             this.sendNotification({
                title: 'Tudo certo!',
@@ -168,13 +167,13 @@ export default {
                type: 'success',
             });
 
-            this.closeModal(data);
-         } catch (error) { }
+            this.closeModal();
+         } catch (error) { };
       },
 
       async deleteThisNews(index, row) {
          try {
-            const data = await this.deleteNews({ projectId: row.project, newsId: row._id });
+            this.deleteNews({ projectId: row.project._id, newsId: row._id });
 
             this.sendNotification({
                title: 'Tudo certo!',
@@ -182,14 +181,14 @@ export default {
                type: 'success',
             });
 
-            this.closeModal(data);
+            this.closeModal();
          } catch (error) {
             this.sendNotification({
                title: 'Operação não realizada.',
                message: 'Ocorreu algum erro ao deletar a atualização.',
                type: 'error',
             });
-         }
+         };
       },
 
       openModal(index, row, modal) {
@@ -202,13 +201,13 @@ export default {
          this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
       },
 
-      async closeModal(data) {
+      async closeModal() {
          this.closeModalWithoutRequest();
 
-         const getedData = data ? data : await this.getNews();
-         if (getedData && getedData.status !== 500) {
-            this.newsData = getedData.news
-         }
+         const data = await this.getAllNews();
+         if (data && data.status !== 500) {
+            this.newsData = data.news;
+         };
       },
 
       closeModalWithoutRequest() {
