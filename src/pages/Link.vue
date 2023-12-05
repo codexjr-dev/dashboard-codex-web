@@ -74,6 +74,7 @@ div
          :isVisualizar="isVisualizar"
          :invalid="invalid"
          :link="novoLink"
+         @set-valid-field="setValidField"
       )
       template(
          #footer
@@ -288,6 +289,11 @@ export default {
          this.isVisualizar = false;
          this.isEditar = false;
          this.titleModal = 'Adicionar Link';
+         this.setValidField("linkName", false);
+         this.setValidField("linkUrl", false);
+         this.setValidField("linkTags", false);
+         this.setValidField("linkDepartments", false);
+         this.invalid = false;
          this.novoLink = cloneDeep(models.emptyLink);
          this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
       },
