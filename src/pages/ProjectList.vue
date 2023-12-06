@@ -304,9 +304,17 @@ export default {
       closeModalWithoutRequest() {
          this.isVisualizar = false;
          this.isEditar = false;
+         this.invalid = false;
+         this.resetValidFields();
          this.novoProjeto = cloneDeep(models.emptyProject);
          this.newsToBeCreated = cloneDeep(models.emptyNews);
          this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
+      },
+
+      resetValidFields() {
+         Object.keys(this.validFields).forEach(key => {
+            this.setValidField(key, false);
+         });
       },
 
       sendNotification(notification) {
