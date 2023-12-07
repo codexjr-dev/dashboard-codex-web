@@ -42,7 +42,7 @@ export default {
             type: 'warning',
          });
          setTimeout(() => {
-            this.$router.push({ name: 'Project' });
+            this.$router.push({ name: 'ProjectList' });
          }, "3000");
       };
    },
@@ -97,7 +97,7 @@ export default {
       },
 
       handleClosePage() {
-         this.$router.push({ name: 'Project' });
+         this.$router.push({ name: 'ProjectList' });
       },
 
       handleCopyLink(index, row) {

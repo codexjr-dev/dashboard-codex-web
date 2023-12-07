@@ -1,85 +1,118 @@
-<template>
-   <div>
-      <el-card>
-         <el-table :data="dados" stripe>
-            <el-table-column prop="name" label="Nome" :width="150"></el-table-column>
-            <el-table-column prop="description" label="Descrição"></el-table-column>
-            <el-table-column prop="team" label="Time" :formatter="formatList" :width="210">
-               <template v-slot="scope">
-                  <div v-for="(member, index) in scope.row.team" :key="index">
-                     <div>{{ index + 1 }}) {{ member.name }}</div>
-                  </div>
-               </template>
-            </el-table-column>
-            <el-table-column prop="startDate" label="Data de início" :formatter="formatDate"
-               :width="150"></el-table-column>
-            <el-table-column label="Ações" align="right">
-               <template v-slot="scope">
-                  <div class="actions">
-                     <div class="actions-button" v-if="isLeadership || isOnTeam(scope.row)"
-                        @click="handleAddNews(scope.$index, scope.row)" :style="'background: #A8CDE8'">
-                        <el-icon>
-                           <Plus />
-                        </el-icon>
-                     </div>
-                     <div class="actions-button" @click="handleViewNews(scope.$index, scope.row)"
-                        :style="'background: #E8A8CE'">
-                        <el-icon>
-                           <List />
-                        </el-icon>
-                     </div>
-                     <div class="actions-button" v-if="isLeadership" @click="handleEditProject(scope.$index, scope.row)"
-                        :style="'background: #4b53c6'">
-                        <el-icon>
-                           <Edit />
-                        </el-icon>
-                     </div>
-                     <div class="actions-button" @click="handleViewProject(scope.$index, scope.row)"
-                        :style="'background: #67c23a'">
-                        <el-icon>
-                           <View />
-                        </el-icon>
-                     </div>
-                     <div class="actions-button" v-if="isLeadership" @click="handleDeleteProject(scope.$index, scope.row)"
-                        :style="'background: #e07c72'">
-                        <el-icon>
-                           <DeleteFilled />
-                        </el-icon>
-                     </div>
-                  </div>
-               </template>
-            </el-table-column>
-         </el-table>
-      </el-card>
+<template lang="pug">
+div
+   el-card
+      el-table(
+         :data="dados"
+         stripe
+      )
+         el-table-column(
+            prop="name",
+            label="Nome",
+         )
+         el-table-column(
+            prop="description",
+            label="Descrição",
+         )
+         el-table-column(
+            prop="team",
+            label="Time",
+            :formatter="formatList"
+         )
+         el-table-column(
+            prop="startDate",
+            label="Data de início",
+            :formatter="formatDate"
+            :width="150"
+         )
+         el-table-column(
+            label="Ações"
+            align="right"
+         )
+            template(
+               #default="scope"
+            )
+               div.actions()
+                  div.actions-button(
+                     v-if="isLeadership || onTeam(scope.row)"
+                     @click="handleAddNews(scope.$index, scope.row)"
+                     :style="'background: #A8CDE8'"
+                  )
+                     el-icon
+                        Plus()
+                  div.actions-button(
+                     @click="handleViewNews(scope.$index, scope.row)"
+                     :style="'background: #E8A8CE'"
+                  )
+                     el-icon
+                        List()
+                  div.actions-button(
+                     v-if="isLeadership"
+                     @click="handleEditProject(scope.$index, scope.row)"
+                     :style="'background: #4b53c6'"
+                  )
+                     el-icon
+                        Edit()
+                  div.actions-button(
+                     @click="handleViewProject(scope.$index, scope.row)"
+                     :style="'background: #67c23a'"
+                  )  
+                     el-icon
+                        View()
+                  div.actions-button(
+                     v-if="isLeadership"
+                     @click="handleDeleteProject(scope.$index, scope.row)"
+                     :style="'background: #e07c72'"
+                  )
+                     el-icon
+                        DeleteFilled()
+   el-dialog(
+      center
+      fullscreen=true
+      :before-close="handleClose"
+      :title="titleModal"
+      @close="closeModal"
+      v-model="showModal"
+   )
+      adicionar-projeto(
+         :titleModal='titleModal'
+         :isVisualizar="isVisualizar"
+         :invalid="invalid"
+         :projeto="novoProjeto"
+         @setValidField="setValidField"
+      )
+      template(
+         #footer
+      )
+         span.dialog-footer
+            el-button(
+               v-if="!isVisualizar"
+               @click="isEditar ? editar() : salvar()"
+               type="primary"
+               color="#4b53c6"
+            ) Salvar
 
-      <el-dialog center :before-close="closeModalWithoutRequest" :title="titleModal" @close="closeModal"
-         v-model="showAddProjectModal" fullscreen="true">
-         <adicionar-projeto :titleModal="titleModal" :isVisualizar="isVisualizar"
-            :projeto="novoProjeto"></adicionar-projeto>
-         <template v-slot:footer>
-            <span class="dialog-footer">
-               <el-button v-if="!isVisualizar" @click="isEditar ? editProject() : saveProject()" type="primary"
-                  color="#4b53c6">
-                  Salvar
-               </el-button>
-            </span>
-         </template>
-      </el-dialog>
-
-      <el-dialog center :before-close="closeModalWithoutRequest" :title="titleModal" @close="closeModal"
-         v-model="showAddNewsModal">
-         <add-news-modal :titleModal="titleModal" :news="newsToBeCreated"></add-news-modal>
-         <template v-slot:footer>
-            <span class="dialog-footer">
-               <el-button @click="saveNews()" type="primary" color="#4b53c6">
-                  Salvar
-               </el-button>
-            </span>
-         </template>
-      </el-dialog>
-   </div>
+   el-dialog(
+      center
+      :before-close="handleClose"
+      :title="titleModal"
+      @close="closeModal"
+      v-model="showModalAddNews"
+   )
+      add-news-modal(
+         :titleModal='titleModal'
+         :news="newsToBeCreated"
+      )
+      template(
+         #footer
+      )
+         span.dialog-footer
+            el-button(
+               v-if="!isVisualizar"
+               @click="isEditar ? editar() : salvar()"
+               type="primary"
+               color="#4b53c6"
+            ) Salvar
 </template>
- 
 
 <script>
 import { mapActions } from 'vuex'
@@ -89,6 +122,7 @@ import AddNewsModal from '@/components/modals/AddNewsModal.vue'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import models from '@/constants/models'
 import { cloneDeep } from 'lodash'
+import moment from 'moment';
 
 export default {
    name: 'Project',
@@ -99,18 +133,19 @@ export default {
    },
 
    async mounted() {
-      this.sendNotification({
+      ElNotification.closeAll()
+      ElNotification({
          title: 'Aguarde...',
          message: 'A coleta de projetos pode levar alguns instantes',
          type: 'warning',
       });
-
-      this.configHeader();
-
+      this.$store.commit('SHOW_SIDEBAR', true);
       this.userInfo = await this.getUserInfo();
-      this.getProjects();
-
-      this.sendNotification({
+      this.$store.commit('SET_SIDEBAR_OPTION', this.$route.name.toLowerCase())
+      const res = await this.findAllProjects()
+      this.dados = res.projects
+      ElNotification.closeAll();
+      ElNotification({
          title: 'Sucesso!',
          message: 'Lista de projetos coletada.',
          type: 'success',
@@ -119,6 +154,18 @@ export default {
 
    data() {
       return {
+         invalid: false,         
+         validFields: {
+            projectName: false,
+            projectContractLink: false,
+            projectDescription: false,
+            projectStartDate: false,
+            projectFinishDate: false,
+            projectTags: false,
+            projectTeam: false,
+            customerName: false,
+            customerPhone: false,
+         },
          dados: [],
          novoProjeto: cloneDeep(models.emptyProject),
          newsToBeCreated: cloneDeep(models.emptyNews),
@@ -126,18 +173,18 @@ export default {
          isEditar: false,
          isVisualizar: false,
          userInfo: {}
-      };
+      }
    },
 
    computed: {
-      showAddProjectModal() {
-         return this.$store.state.page.modalContext === 'ADD_OR_EDIT_PROJECT';
+      showModal() {
+         return this.$store.state.header.modal === 'projeto'
       },
-      showAddNewsModal() {
-         return this.$store.state.page.modalContext === 'ADD_NEWS';
+      showModalAddNews() {
+         return this.$store.state.header.modal === "add_news"
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
       }
    },
 
@@ -151,11 +198,8 @@ export default {
          getUserInfo: 'userInfo'
       }),
 
-      configHeader() {
-         this.$store.commit('SET_PAGE_CONTEXT', 'project');
-         this.$store.commit('SET_HEADER_TITLE', 'Projetos');
-         this.$store.commit('SET_HEADER_BUTTON_VISIBILITY', true);
-         this.$store.commit('SHOW_SIDEBAR', true);
+      onTeam(row) {
+         return this.getTeamMembersId(row).includes(this.userInfo.sub._id);
       },
 
       formatDate(row, column, prop) {
@@ -163,36 +207,126 @@ export default {
       },
 
       formatList(row, column, prop) {
-         return Utils.formatListToCard(row, column, prop);
+         let listFormated = '';
+         prop.forEach((item, index) => {
+            if (index !== prop.length - 1)
+               listFormated += item.name + ', ';
+            else
+               listFormated += item.name;
+         });
+         return listFormated;
       },
 
-      async getProjects() {
-         const res = await this.findAllProjects();
-         this.dados = res.projects;
+      async closeModal() {
+         this.isVisualizar = false
+         this.isEditar = false
+         this.novoProjeto = cloneDeep(models.emptyProject)
+         await this.getProjetos()
+         this.$store.commit('SET_MODAL', '')
       },
 
-      isOnTeam(row) {
-         return this.getTeamMembersId(row).includes(this.userInfo.sub._id);
+      handleClose() {
+         this.$store.commit('SET_MODAL', '')
       },
-
+      
       getTeamMembersId(row) {
          return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
       },
-
+      
+      async getProjetos() {
+         const res = await this.findAllProjects()
+         this.dados = res.projects
+      },
+      
       handleViewProject(index, row) {
-         this.isVisualizar = true;
-         this.isEditar = false;
-         this.titleModal = row.name;
+         this.isVisualizar = true
          row.team = this.getTeamMembersId(row);
-         this.openModal(index, row, 'ADD_OR_EDIT_PROJECT');
+         this.novoProjeto = row
+         this.titleModal = row.name
+         this.$store.commit('SET_MODAL', 'projeto')
+      },
+      
+      handleEditProject(index, row) {
+         this.isVisualizar = false
+         this.isEditar = true
+         row.team = this.getTeamMembersId(row);
+         this.novoProjeto = row
+         this.titleModal = 'Editar projeto'
+         this.$store.commit('SET_MODAL', 'projeto')
       },
 
-      handleEditProject(index, row) {
-         this.isVisualizar = false;
-         this.isEditar = true;
-         this.titleModal = 'Editar projeto'
-         row.team = this.getTeamMembersId(row);
-         this.openModal(index, row, 'ADD_OR_EDIT_PROJECT');
+      setValidField(fieldName, value) {
+         this.validFields[fieldName] = value;
+      },
+
+      isValid() {
+         let isValid = true;
+         Object.values(this.validFields).forEach(value => {
+            if (!value) isValid = false;
+         })
+         this.invalid = !isValid;
+         return isValid;
+      },
+
+      async salvar() {
+         try {
+            if (this.isValid()) {
+               const res = await this.createProject(this.novoProjeto)
+               ElNotification.closeAll()
+               ElNotification({
+                  title: 'Tudo certo!',
+                  message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
+                  type: 'success',
+               })
+               this.$store.commit('SET_MODAL', '')
+               await this.getProjetos()
+               this.novoProjeto = cloneDeep(models.emptyProject)
+            }
+         } catch (error) {}
+      },
+
+      async editar() {
+         try {
+            const res = await this.updateProject({ project: this.novoProjeto, id: this.novoProjeto._id })
+            this.isEditar = false
+            this.$store.commit('SET_MODAL', '')
+            ElNotification.closeAll()
+            ElNotification({
+               title: 'Tudo certo!',
+               message: `${res.project.name} foi editado com sucesso`,
+               type: 'success',
+            })
+            await this.getProjetos()
+            this.novoProjeto = cloneDeep(models.emptyProject)
+         } catch (error) { }
+      },
+
+      handleAddNews(index, row) {
+         this.novoProjeto = row;
+         this.titleModal = 'Adicionar atualização'
+         this.$store.commit('SET_MODAL', 'add_news')
+      },
+
+      async saveNews() {
+         try {
+            await this.createNews({ news: this.newsToBeCreated, projectId: this.novoProjeto._id })
+            ElNotification.closeAll()
+            ElNotification({
+               title: 'Tudo certo!',
+               message: `Atualização criada com sucesso!`,
+               type: 'success',
+            });
+            this.$store.commit('SET_MODAL', '');
+            this.novoProjeto = cloneDeep(models.emptyProject);
+            this.newsToBeCreated = cloneDeep(models.emptyNews);
+         } catch (error) { }
+      },
+
+      async handleViewNews(index, row) {
+         this.$router.push({
+            name: 'ViewNews',
+            params: { projectId: JSON.stringify(row._id) }
+         });
       },
 
       handleDeleteProject(index, row) {
@@ -205,102 +339,23 @@ export default {
                type: 'warning',
             }
          ).then(async () => {
-            await this.deleteAndGetAllProjects(index, row)
-         });
+            await this.excluir(index, row)
+         })
       },
 
-      async handleViewNews(index, row) {
-         this.$router.push({
-            name: 'ViewNews',
-            params: { projectId: JSON.stringify(row._id) }
-         });
-      },
-
-      handleAddNews(index, row) {
-         this.novoProjeto = row;
-         this.titleModal = 'Adicionar atualização'
-         this.openModal(index, row, 'ADD_NEWS');
-      },
-
-      async saveProject() {
+      async excluir(index, row) {
          try {
-            const res = await this.createProject(this.novoProjeto)
-
-            this.sendNotification({
-               title: 'Tudo certo!',
-               message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
-               type: 'success',
-            });
-
-            this.closeModal();
-         } catch (error) { }
-      },
-
-      async editProject() {
-         try {
-            const res = await this.updateProject({ project: this.novoProjeto, id: this.novoProjeto._id });
-
-            this.sendNotification({
-               title: 'Tudo certo!',
-               message: `${res.project.name} foi editado com sucesso`,
-               type: 'success',
-            });
-
-            this.closeModal();
-         } catch (error) { }
-      },
-
-      async saveNews() {
-         try {
-            await this.createNews({ news: this.newsToBeCreated, projectId: this.novoProjeto._id });
-
-            this.sendNotification({
-               title: 'Tudo certo!',
-               message: `Atualização criada com sucesso!`,
-               type: 'success',
-            });
-
-            this.closeModal();
-         } catch (error) { }
-      },
-
-      async deleteAndGetAllProjects(index, row) {
-         try {
-            await this.deleteProject(row._id);
-
-            this.sendNotification({
+            await this.deleteProject(row._id)
+            ElNotification.closeAll()
+            ElNotification({
                title: 'Tudo certo!',
                message: 'Projeto removido com sucesso',
                type: 'success',
-            });
-
-            await this.getProjects();
+            })
+            await this.getProjetos()
          } catch (error) { }
       },
-
-      openModal(index, row, modal) {
-         this.novoProjeto = row;
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
-      },
-
-      async closeModal() {
-         this.closeModalWithoutRequest();
-         await this.getProjects();
-      },
-
-      closeModalWithoutRequest() {
-         this.isVisualizar = false;
-         this.isEditar = false;
-         this.novoProjeto = cloneDeep(models.emptyProject);
-         this.newsToBeCreated = cloneDeep(models.emptyNews);
-         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
-      },
-
-      sendNotification(notification) {
-         ElNotification.closeAll();
-         ElNotification(notification);
-      }
-   },
+   }
 }
 </script>
 
