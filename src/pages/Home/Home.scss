@@ -27,16 +27,22 @@ body {
 
 .body {
   display: flex;
-  justify-content: space-between;
+  margin-top: 148px;
   align-items: center;
+}
+
+.body-box {
+  width: 1164px;
+  height: 424px;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
 }
 
 
 .body-text {
   width: 424px;
   height: 220px;
-  padding-top: 148px;
-  padding-left: 58px;
 }
 
 h1 {
@@ -54,7 +60,6 @@ p {
 }
 
 .login-body {
-  // margin-left: 260px;
   display: flex;
   width: 424px;
   height: 424px;
@@ -64,7 +69,6 @@ p {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
 }
 
 .login-box {

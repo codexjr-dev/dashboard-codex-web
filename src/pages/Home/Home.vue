@@ -5,7 +5,8 @@
       <h2 class="site-name">Projexa</h2>
     </div>
     <div class="body">
-      <div class="body-text">
+      <div class="body-box">
+        <div class="body-text">
         <div>
           <h1>
             Bem-vindo, 
@@ -43,6 +44,7 @@
           </div>
             <button class="button-register">Cadastrar EJ</button>
         </div>
+      </div>
       </div>
     </div>
   </body>
