@@ -1,31 +1,51 @@
 <template>
-<div id="home">
-  <div id="loginContainer">
-    <div class="infoCard">
-      <el-row id="title">
-        <h2>Bem-vindo, empresário júnior</h2>
-      </el-row>
-      <el-row id="subtitle">
-        <p>
-          Por ter uma rotatividade de membros extremamente alta, a
-          organização dos dados da empresa júnior se torna difícil de ser gerenciada com assertividade,
-          pois em meio às várias planilhas e pastas muitas informações acabam se perdendo
-          ou ficando muito “escondidas”. O problema se evidencia no momento da transição de diretorias,
-          em que raramente tudo é passado para frente, pois nem mesmo os antigos diretores sabem onde estão
-          alguns dados.
-        </p>
-      </el-row>
-      <el-column id="buttons">
-        <el-row>
-          <el-button class="button" round size="large" @click="cadastrarEj()">Cadastrar EJ</el-button>
-        </el-row>
-        <el-row>
-          <el-button class="button" round type="primary" size="large" @click="entrar()">Entrar</el-button>
-        </el-row>
-      </el-column>
+  <body>
+    <div class="header">
+      <img src='/src/assets/dashboard.png' alt="logo do projexa" class="logo">
+      <h2 class="site-name">Projexa</h2>
     </div>
-  </div>
-</div>
+    <div class="body">
+      <div class="body-text">
+        <div>
+          <h1>
+            Bem-vindo, 
+            <br>
+            empresário júnior
+          </h1>
+        </div>
+        <div>
+          <p>
+            O Projexa foi criado com o objetivo de auxiliar no gerenciamento da sua EJ, facilitando tarefas através de um
+            ambiente integrado feito por juniores, para juniores.
+          </p>
+        </div>
+      </div>
+      <div class="login-body">
+        <div class="login-box">
+          <h2>
+            Entre na sua
+            <br>
+            conta
+          </h2>
+          <form>
+            <div class="input-box">
+              <input required type="email" placeholder="Digite o email">
+            </div>
+            <div class="input-box">
+              <input requerid type="password" placeholder="Digite a senha">
+            </div>
+            <button class="button-input">Entrar</button>
+          </form>
+        </div>
+        <div class="register">
+          <div class="">
+            <span>Ainda não é cadastrado?</span>
+          </div>
+            <button class="button-register">Cadastrar EJ</button>
+        </div>
+      </div>
+    </div>
+  </body>
 </template>
 
 <script>
