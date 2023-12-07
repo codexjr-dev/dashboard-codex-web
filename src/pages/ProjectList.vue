@@ -194,7 +194,7 @@ export default {
       async handleViewProject(index, row) {
          this.$router.push({
             name: 'Project',
-            params: { projectId: JSON.stringify(row._id) }
+            params: { projectId: row._id }
          });
       },
 

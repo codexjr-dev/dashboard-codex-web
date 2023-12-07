@@ -48,7 +48,7 @@ export default {
 
     methods: {
         ...mapActions ({
-            findAllProjects: 'findAllProjects'
+            findProject: 'findProject'
         }),
 
         configPage() {
@@ -60,16 +60,8 @@ export default {
         },
 
         async getProject() {
-            const res = await this.findAllProjects();
-
-            const query = this.$route.params;
-            const projectId = query.projectId ? JSON.parse(query.projectId) : null;
-            
-            const project = res.projects.find(function(project) {
-                return project._id === projectId;
-            });
-
-            return project;
+            const res = await this.findProject(this.$route.params.projectId);
+            return res.project;
         },
 
         formatDate(prop) {
