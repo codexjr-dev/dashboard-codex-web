@@ -93,6 +93,24 @@ const actions = {
    
          return err.response;
        }
+    },
+
+    async getAllNewsByEj({ commit }) {
+      try {
+         const result = await axios({
+            method: 'GET',
+            url: `news`
+         });
+         return result.data;
+       } catch (err) {
+         const errorMessage = err.response.data.error;
+   
+         isBadToken(errorMessage)
+           ? console.log(err.response.data.error) || localStorage.clear()
+           : null; // To inspect, you can change null by console.log(res)
+   
+         return err.response;
+       }
     }
 }
 

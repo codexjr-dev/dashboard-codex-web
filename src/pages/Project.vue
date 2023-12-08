@@ -8,7 +8,6 @@ div
          el-table-column(
             prop="name",
             label="Nome",
-            :width="150"
          )
          el-table-column(
             prop="description",
@@ -18,7 +17,6 @@ div
             prop="team",
             label="Time",
             :formatter="formatList"
-            :width="210"
          )
          el-table-column(
             prop="startDate",
@@ -69,16 +67,18 @@ div
                         DeleteFilled()
    el-dialog(
       center
+      fullscreen=true
       :before-close="handleClose"
       :title="titleModal"
       @close="closeModal"
       v-model="showModal"
-      fullscreen=true
    )
       adicionar-projeto(
          :titleModal='titleModal'
          :isVisualizar="isVisualizar"
+         :invalid="invalid"
          :projeto="novoProjeto"
+         @setValidField="setValidField"
       )
       template(
          #footer
@@ -107,7 +107,8 @@ div
       )
          span.dialog-footer
             el-button(
-               @click="saveNews()"
+               v-if="!isVisualizar"
+               @click="isEditar ? editar() : salvar()"
                type="primary"
                color="#4b53c6"
             ) Salvar
@@ -153,6 +154,18 @@ export default {
 
    data() {
       return {
+         invalid: false,         
+         validFields: {
+            projectName: false,
+            projectContractLink: false,
+            projectDescription: false,
+            projectStartDate: false,
+            projectFinishDate: false,
+            projectTags: false,
+            projectTeam: false,
+            customerName: false,
+            customerPhone: false,
+         },
          dados: [],
          novoProjeto: cloneDeep(models.emptyProject),
          newsToBeCreated: cloneDeep(models.emptyNews),
@@ -215,16 +228,16 @@ export default {
       handleClose() {
          this.$store.commit('SET_MODAL', '')
       },
-
+      
       getTeamMembersId(row) {
          return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
       },
-
+      
       async getProjetos() {
          const res = await this.findAllProjects()
          this.dados = res.projects
       },
-
+      
       handleViewProject(index, row) {
          this.isVisualizar = true
          row.team = this.getTeamMembersId(row);
@@ -232,7 +245,7 @@ export default {
          this.titleModal = row.name
          this.$store.commit('SET_MODAL', 'projeto')
       },
-
+      
       handleEditProject(index, row) {
          this.isVisualizar = false
          this.isEditar = true
@@ -242,19 +255,34 @@ export default {
          this.$store.commit('SET_MODAL', 'projeto')
       },
 
+      setValidField(fieldName, value) {
+         this.validFields[fieldName] = value;
+      },
+
+      isValid() {
+         let isValid = true;
+         Object.values(this.validFields).forEach(value => {
+            if (!value) isValid = false;
+         })
+         this.invalid = !isValid;
+         return isValid;
+      },
+
       async salvar() {
          try {
-            const res = await this.createProject(this.novoProjeto)
-            ElNotification.closeAll()
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
-               type: 'success',
-            })
-            this.$store.commit('SET_MODAL', '')
-            await this.getProjetos()
-            this.novoProjeto = cloneDeep(models.emptyProject)
-         } catch (error) { }
+            if (this.isValid()) {
+               const res = await this.createProject(this.novoProjeto)
+               ElNotification.closeAll()
+               ElNotification({
+                  title: 'Tudo certo!',
+                  message: `Projeto ${res.project.name} foi cadastrado com sucesso`,
+                  type: 'success',
+               })
+               this.$store.commit('SET_MODAL', '')
+               await this.getProjetos()
+               this.novoProjeto = cloneDeep(models.emptyProject)
+            }
+         } catch (error) {}
       },
 
       async editar() {

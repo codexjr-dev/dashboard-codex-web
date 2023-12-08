@@ -18,11 +18,17 @@ div
             label="Departamentos",
             :formatter="formatList"
          )
+            template(v-slot="scope")
+               div(v-for="(prop, index) in scope.row.departments", :key="index")
+                  div {{ index + 1 }}) {{ prop }}
          el-table-column(
             prop="tags",
             label="Tags",
             :formatter="formatList"
          )
+            template(v-slot="scope")
+               div(v-for="(prop, index) in scope.row.tags", :key="index")
+                  div {{ index + 1 }}) {{ prop }}
          el-table-column(
             label="Ações"
             align="right"
@@ -58,15 +64,17 @@ div
                      el-icon
                         DeleteFilled()
    el-dialog(
-      :before-close="handleClose"
+      :before-close="closeModalWithoutRequest"
       :title="titleModal"
       @close="closeModal"
-      v-model="showModal"
+      v-model="showAddLinkModal"
    )
       adicionar-link(
          :titleModal='titleModal'
          :isVisualizar="isVisualizar"
+         :invalid="invalid"
          :link="novoLink"
+         @set-valid-field="setValidField"
       )
       template(
          #footer
@@ -96,17 +104,17 @@ export default {
    },
 
    async mounted() {
-      ElNotification.closeAll();
-      ElNotification({
+      this.configHeader();
+
+      this.sendNotification({
          title: 'Aguarde...',
          message: 'A coleta de membros pode levar alguns instantes',
          type: 'warning',
       });
-      this.$store.commit('SET_SIDEBAR_OPTION', this.$route.name.toLowerCase())
-      const res = await this.findAllLinks()
-      this.dados = res.links
-      ElNotification.closeAll();
-      ElNotification({
+
+      this.getLinks();
+
+      this.sendNotification({
          title: 'Sucesso!',
          message: 'Lista de links coletada.',
          type: 'success',
@@ -115,20 +123,27 @@ export default {
 
    data() {
       return {
+         invalid: false,
+         validFields: {
+            linkName: false,
+            linkUrl: false,
+            linkTags: false,
+            linkDepartments: false,
+         },
          dados: [],
          novoLink: cloneDeep(models.emptyLink),
          titleModal: 'Adicionar Link',
          isEditar: false,
          isVisualizar: false,
-      }
+      };
    },
 
    computed: {
-      showModal() {
-         return this.$store.state.header.modal === 'link'
+      showAddLinkModal() {
+         return this.$store.state.page.modalContext === 'ADD_OR_EDIT_LINK';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
       }
    },
 
@@ -140,74 +155,49 @@ export default {
          updateLink: 'updateLink'
       }),
 
+      setValidField(fieldName, value) {
+         this.validFields[fieldName] = value;
+      },
+
+      isValid() {
+         let isValid = true;
+         Object.values(this.validFields).forEach(value => {
+            if (!value) isValid = false;
+         })
+         this.invalid = !isValid
+         return isValid;
+      },
+
+      configHeader() {
+         this.$store.commit('SET_PAGE_CONTEXT', 'link');
+         this.$store.commit('SET_HEADER_TITLE', 'Links');
+         this.$store.commit('SET_HEADER_BUTTON_VISIBILITY', true);
+         this.$store.commit('SHOW_SIDEBAR', true);
+      },
+
       formatDate(row, column, prop) {
-         return Utils.formatDate(prop)
+         return Utils.formatDate(prop);
+      },
+
+      formatList(row, column, prop) {
+         return Utils.formatListToCard(row, column, prop);
       },
 
       async getLinks() {
-         const res = await this.findAllLinks()
-         this.dados = res.links
-      },
-
-      async salvar() {
-         try {
-            const res = await this.createLink(this.novoLink)
-            ElNotification.closeAll();
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `Link ${res.link.name} foi cadastrado com sucesso`,
-               type: 'success',
-            })
-            this.$store.commit('SET_MODAL', '')
-            await this.getLinks()
-            this.novoLink = cloneDeep(models.emptyLink)
-         } catch (error) { }
-      },
-
-      async editar() {
-         try {
-            const res = await this.updateLink({
-               link: this.novoLink,
-               id: this.novoLink._id,
-            })
-            this.isEditar = false
-            this.$store.commit('SET_MODAL', '')
-            ElNotification.closeAll();
-            ElNotification({
-               title: 'Tudo certo!',
-               message: `${res.link.name} foi editado com sucesso`,
-               type: 'success',
-            })
-            await this.getLinks()
-            this.novoLink = cloneDeep(models.emptyLink)
-         } catch (error) { }
+         const res = await this.findAllLinks();
+         this.dados = res.links;
       },
 
       handleEditar(index, row) {
-         this.isEditar = true
-         this.novoLink = row
-         this.titleModal = 'Editar link'
-         this.$store.commit('SET_MODAL', 'link')
+         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
+         this.isVisualizar = false; this.isEditar = true;
+         this.titleModal = 'Editar Link';
       },
 
       handleVisualizar(index, row) {
-         this.isVisualizar = true
-         this.novoLink = row
-         this.titleModal = row.name
-         this.$store.commit('SET_MODAL', 'link')
-      },
-
-      async excluir(index, row) {
-         try {
-            await this.deleteLink(row._id)
-            ElNotification.closeAll();
-            ElNotification({
-               title: 'Tudo certo!',
-               message: 'Link removido com sucesso',
-               type: 'success',
-            })
-            await this.getLinks()
-         } catch (error) { }
+         this.openModal(index, row, 'ADD_OR_EDIT_LINK');
+         this.isVisualizar = true; this.isEditar = false;
+         this.titleModal = row.name;
       },
 
       handleExcluir(index, row) {
@@ -220,27 +210,53 @@ export default {
                type: 'warning',
             }
          ).then(async () => {
-            await this.excluir(index, row)
+            await this.excluir(index, row);
          })
       },
 
-      handleClose() {
-         this.isVisualizar = false
-         this.isEditar = false
-         this.novoLink = cloneDeep(models.emptyLink)
-         this.$store.commit('SET_MODAL', '')
-      },
-
-      formatList(row, column, prop) {
-         let listFormated = ''
-         prop.forEach((item, index) => {
-            if (index !== prop.length - 1) {
-               listFormated += item + ', '
-            } else {
-               listFormated += item
+      async salvar() {
+         try {
+            if (this.isValid()) {
+               const res = await this.createLink(this.novoLink);
+               this.sendNotification({
+                  title: 'Tudo certo!',
+                  message: `Link ${res.link.name} foi cadastrado com sucesso`,
+                  type: 'success',
+                });
+               this.closeModal();
             }
-         })
-         return listFormated
+         } catch (error) { }
+      },
+
+      async editar() {
+         try {
+            const res = await this.updateLink({
+               link: this.novoLink,
+               id: this.novoLink._id,
+            });
+
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: `${res.link.name} foi editado com sucesso`,
+               type: 'success',
+            });
+
+            this.closeModal();
+         } catch (error) { }
+      },
+
+      async excluir(index, row) {
+         try {
+            await this.deleteLink(row._id);
+
+            this.sendNotification({
+               title: 'Tudo certo!',
+               message: 'Link removido com sucesso',
+               type: 'success',
+            });
+
+            await this.getLinks();
+         } catch (error) { }
       },
 
       copyNick(row) {
@@ -252,12 +268,39 @@ export default {
          document.execCommand('copy');
          document.body.removeChild(input);
 
-         ElNotification.closeAll();
-         ElNotification({
+         this.sendNotification({
             title: 'Tudo certo!',
             message: `Link copiado para a área de tranferência`,
             type: 'success',
-         })
+         });
+      },
+
+      openModal(index, row, modal) {
+         this.novoLink = row;
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', modal);
+      },
+
+      async closeModal() {
+         this.closeModalWithoutRequest();
+         await this.getLinks();
+      },
+
+      closeModalWithoutRequest() {
+         this.isVisualizar = false;
+         this.isEditar = false;
+         this.titleModal = 'Adicionar Link';
+         this.setValidField("linkName", false);
+         this.setValidField("linkUrl", false);
+         this.setValidField("linkTags", false);
+         this.setValidField("linkDepartments", false);
+         this.invalid = false;
+         this.novoLink = cloneDeep(models.emptyLink);
+         this.$store.commit('SET_AND_SHOW_MODAL_CONTEXT', '');
+      },
+
+      sendNotification(notification) {
+         ElNotification.closeAll();
+         ElNotification(notification);
       }
    }
 }
