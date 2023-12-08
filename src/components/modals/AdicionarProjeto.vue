@@ -118,6 +118,7 @@ div.modal-content
       el-text.verify(
         v-if="this.errorMessages['projectTeam']"
       ) {{ this.errorMessages['projectTeam'] }}
+  div.col
     el-row
       el-divider(
         content-position="left"
@@ -151,6 +152,16 @@ div.modal-content
       el-divider(
         content-position="left"
       ) <label className="required"> Nome do cliente </label>
+      ) Email do cliente
+      el-input(
+		  	placeholder="Email do cliente"
+		  	v-model="projeto.customer.email"
+        :disabled="isVisualizar"
+		  )
+    el-row
+      el-divider(
+        content-position="left"
+      ) Nome do cliente
       el-input(
 		  	placeholder="Nome do cliente"
 		  	v-model="projeto.customer.name"
