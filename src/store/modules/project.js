@@ -8,6 +8,13 @@ const actions = {
         })
         return result.data
     },
+    async findProject({ commit }, id) {
+        const result = await axios({
+            method: 'GET',
+            url: `project/${id}`
+        })
+        return result.data
+    },
     async createProject({ commit }, project) {
         const result = await axios({
             method: 'POST',
