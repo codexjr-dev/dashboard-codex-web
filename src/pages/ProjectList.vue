@@ -40,8 +40,8 @@
                            <View />
                         </el-icon>
                      </div>
-                     <div class="actions-button" v-if="isLeadership" @click="handleDeleteProject(scope.$index, scope.row)"
-                        :style="'background: #e07c72'">
+                     <div class="actions-button" v-if="isLeadership"
+                        @click="handleDeleteProject(scope.$index, scope.row)" :style="'background: #e07c72'">
                         <el-icon>
                            <DeleteFilled />
                         </el-icon>
@@ -54,8 +54,8 @@
 
       <el-dialog center :before-close="closeModalWithoutRequest" :title="titleModal" @close="closeModal"
          v-model="showAddProjectModal" fullscreen="true">
-         <adicionar-projeto :titleModal="titleModal" :isVisualizar="isVisualizar" :invalid="invalid" :projeto="novoProjeto"
-            @setValidField="setValidField"></adicionar-projeto>
+         <adicionar-projeto :titleModal="titleModal" :isVisualizar="isVisualizar" :invalid="invalid"
+            :projeto="novoProjeto" @setValidField="setValidField"></adicionar-projeto>
          <template v-slot:footer>
             <span class="dialog-footer">
                <el-button v-if="!isVisualizar" @click="isEditar ? editProject() : saveProject()" type="primary"
@@ -79,7 +79,7 @@
       </el-dialog>
    </div>
 </template>
- 
+
 
 <script>
 import { mapActions } from 'vuex'
@@ -149,7 +149,7 @@ export default {
          return this.$store.state.page.modalContext === 'ADD_NEWS';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"));
       }
    },
 

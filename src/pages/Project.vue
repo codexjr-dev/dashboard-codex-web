@@ -154,7 +154,7 @@ export default {
 
    data() {
       return {
-         invalid: false,         
+         invalid: false,
          validFields: {
             projectName: false,
             projectContractLink: false,
@@ -184,7 +184,7 @@ export default {
          return this.$store.state.header.modal === "add_news"
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"))
       }
    },
 
@@ -228,16 +228,16 @@ export default {
       handleClose() {
          this.$store.commit('SET_MODAL', '')
       },
-      
+
       getTeamMembersId(row) {
          return row.team[0] && row.team[0].name ? row.team.map((member) => member._id) : row.team;
       },
-      
+
       async getProjetos() {
          const res = await this.findAllProjects()
          this.dados = res.projects
       },
-      
+
       handleViewProject(index, row) {
          this.isVisualizar = true
          row.team = this.getTeamMembersId(row);
@@ -245,7 +245,7 @@ export default {
          this.titleModal = row.name
          this.$store.commit('SET_MODAL', 'projeto')
       },
-      
+
       handleEditProject(index, row) {
          this.isVisualizar = false
          this.isEditar = true
@@ -282,7 +282,7 @@ export default {
                await this.getProjetos()
                this.novoProjeto = cloneDeep(models.emptyProject)
             }
-         } catch (error) {}
+         } catch (error) { }
       },
 
       async editar() {

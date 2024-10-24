@@ -143,7 +143,7 @@ export default {
          return this.$store.state.page.modalContext === 'ADD_OR_EDIT_LINK';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"));
       }
    },
 
@@ -222,7 +222,7 @@ export default {
                   title: 'Tudo certo!',
                   message: `Link ${res.link.name} foi cadastrado com sucesso`,
                   type: 'success',
-                });
+               });
                this.closeModal();
             }
          } catch (error) { }

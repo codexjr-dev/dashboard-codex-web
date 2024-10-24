@@ -59,7 +59,7 @@ export default {
 
    computed: {
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"));
       },
       showEditNewsModal() {
          return this.$store.state.page.modalContext === 'EDIT_NEWS';
