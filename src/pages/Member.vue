@@ -146,7 +146,7 @@ export default {
          return this.$store.state.page.modalContext === 'ADD_OR_EDIT_MEMBER';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"));
       }
    },
 
