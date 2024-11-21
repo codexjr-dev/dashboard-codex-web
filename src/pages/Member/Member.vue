@@ -100,5 +100,5 @@ div
 </script>
 
 <style lang="scss" scoped>
-    @import './Link.scss';
+    @import './Member.scss';
 </style>
