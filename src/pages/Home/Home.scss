@@ -27,32 +27,33 @@ body {
 
 .body {
   display: flex;
-  margin-top: 148px;
+  margin-top: 3%;
+  justify-content: space-evenly;
   align-items: center;
 }
 
 .body-box {
-  width: 1164px;
-  height: 424px;
+  width: 60%;
   display: flex;
   justify-content: space-between;
-  margin: auto;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 
 .body-text {
-  width: 424px;
-  height: 220px;
+  width: 100%;
+  padding: 4%;
 }
 
 h1 {
-  font-size: 49px;
-  width: 424px;
+  font-size: 300%;
+  width: 130%;
   height: 95px;
 }
 
 p {
-  font-size: 22px;
+  font-size: 130%;
   width: 580px;
   height: 70px;
   margin-top: 55px;
@@ -61,14 +62,15 @@ p {
 
 .login-body {
   display: flex;
-  width: 424px;
-  height: 424px;
+  width: 50%;
+  height: 10%;
   background-color: rgb(40, 42, 56, 0.30);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 4%;
 }
 
 .login-box {
@@ -78,8 +80,8 @@ p {
 .login-box h2 {
   font-size: 36px;
   text-align: center;
-  margin-top: 44px;
-  margin-bottom: 44;
+  margin-top: 5%;
+  margin-bottom: 5%;
 
 }
 
@@ -109,7 +111,8 @@ p {
 .register {
   text-align: center;
   margin-top: 40px;
-  font-size: 14px;
+  margin-bottom: 40px;
+  font-size: 100%;
 }
 
 .button-register {
