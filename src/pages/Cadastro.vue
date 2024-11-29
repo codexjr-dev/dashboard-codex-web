@@ -3,24 +3,24 @@ div.cadastro-page
    div.cadastro-form
       span.page-title Cadastre sua EJ
       el-input(
-         placeholder="digite o nome da ej"
+         placeholder="Digite o nome da EJ"
          v-model="cadastroData.name"
       )
       el-input(
-         placeholder="digite o nome do presidente"
+         placeholder="Digite o nome do presidente"
          v-model="cadastroData.presidentData.name"
       )
       el-input(
-         placeholder="digite o email"
+         placeholder="Digite o email"
          v-model="cadastroData.presidentData.email"
       )
       el-input(
-         placeholder="digite a senha"
+         placeholder="Digite a senha"
          v-model="cadastroData.presidentData.password"
          show-password
       )
       el-date-picker(
-         placeholder="digite a sua data de nascimento"
+         placeholder="Digite a sua data de nascimento"
          v-model="cadastroData.presidentData.birthDate"
       )
       el-button(
