@@ -2,7 +2,7 @@
   "name": "tcc-front",
   "version": "0.0.0",
   "scripts": {
-    "dev": "VUE_ENV=dev vite",
+    "dev": "SET VUE_ENV=dev && vite",
     "postinstall": "npm run build",
     "start": "VUE_ENV=prod node server.js",
     "build": "vite build",

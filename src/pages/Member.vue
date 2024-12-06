@@ -34,12 +34,16 @@ div
                      v-if="isLeadership || isThisMemberLoged(scope.row)"
                      @click="handleEditar(scope.$index, scope.row)"
                      :style="'background: #4b53c6'"
+                     title="Editar"
+                     aria-label="Editar"
                   )
                      el-icon
                         Edit()
                   div.actions-button(
                      @click="handleVisualizar(scope.$index, scope.row)"
                      :style="'background: #67c23a'"
+                     title="Visualizar"
+                     aria-label="Visualizar"
                   )
                      el-icon
                         View()
@@ -47,6 +51,8 @@ div
                      v-if="isLeadership"
                      @click="handleExcluir(scope.$index, scope.row)"
                      :style="'background: #e07c72'"
+                     title="Excluir"
+                     aria-label="Excluir"
                   )
                      el-icon
                         DeleteFilled()

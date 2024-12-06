@@ -5,6 +5,8 @@ div.sidebar
    div.sidebar-button(
       :style="isMember ? 'background: #4b53c6' : 'background: #e6e6e6'"
       @click="handleOption('member')"
+      title="Membros"
+      aria-label="Membros"
    )
       el-icon
          user-filled(:style="isMember ? 'color: white' : 'color: #808080'")
@@ -12,6 +14,8 @@ div.sidebar
    div.sidebar-button(
       :style="isProject ? 'background: #4b53c6' : 'background: #e6e6e6'"
       @click="handleOption('project')"
+      title="Projetos"
+      aria-label="Projetos"
    )
       el-icon
          files(:style="isProject ? 'color: white' : 'color: #808080'")
@@ -19,6 +23,8 @@ div.sidebar
    div.sidebar-button(
       :style="isLink ? 'background: #4b53c6' : 'background: #e6e6e6'"
       @click="handleOption('link')"
+      title="Links"
+      aria-label="Links"
    )
       el-icon
          connection(:style="isLink ? 'color: white' : 'color: #808080'")
@@ -26,6 +32,8 @@ div.sidebar
    div.sidebar-button(
       :style="isAllNews ? 'background: #4b53c6' : 'background: #e6e6e6'"
       @click="handleOption('allnews')"
+      title="Atualizações"
+      aria-label="Atualizações"
    )
       el-icon
          list(:style="isAllNews ? 'color: white' : 'color: #808080'")
@@ -34,12 +42,16 @@ div.sidebar
       v-if="isLeadership"
       :style="isSettings ? 'background: #4b53c6' : 'background: #e6e6e6'"
       @click="handleNotifyUnderDevelopment('settings')"
+      title="Configurações"
+      aria-label="Configurações"
    )
       el-icon
          setting(:style="isSettings ? 'color: white' : 'color: #808080'")
       span(v-if="!isSettings") Configurações
    div.sidebar-button#logoff-button(
       @click="logoff"
+      title="Sair"
+      aria-label="Sair"
    )
       el-icon
          SwitchButton#logoff-icon()
