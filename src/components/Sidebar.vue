@@ -76,7 +76,7 @@ export default {
          return this.$store.state.page.context === 'allnews'
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"))
       }
    },
 

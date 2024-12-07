@@ -301,7 +301,7 @@ export default {
 
    computed: {
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"));
       },
       isToDisable() {
          return this.isVisualizar || !this.isLeadership;

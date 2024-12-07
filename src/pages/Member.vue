@@ -4,6 +4,9 @@ div
       el-table(
          :data="dados"
          stripe
+         style="width: 100%"
+         :table-layout="auto"
+         border
       )
          el-table-column(
             prop="name",
@@ -146,7 +149,7 @@ export default {
          return this.$store.state.page.modalContext === 'ADD_OR_EDIT_MEMBER';
       },
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"));
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"));
       }
    },
 
