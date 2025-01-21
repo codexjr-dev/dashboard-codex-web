@@ -1,6 +1,7 @@
 {
   "name": "tcc-front",
   "version": "0.0.0",
+
   "scripts": {
 
     "dev": "VUE_ENV=dev vite",
@@ -15,7 +16,7 @@
     "dev:w": "set VUE_ENV=dev && vite",
     "start:w": "set VUE_ENV=prod && node server.js"
   },
- 
+
   "dependencies": {
     "@element-plus/icons-vue": "^1.1.4",
     "axios": "^0.27.2",
