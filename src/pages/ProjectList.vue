@@ -2,46 +2,69 @@
    <div>
       <el-card>
          <el-table :data="dados" stripe>
-            <el-table-column prop="name" label="Nome" :width="150"></el-table-column>
-            <el-table-column prop="description" label="Descrição"></el-table-column>
-            <el-table-column prop="team" label="Time" :formatter="formatList" :width="210">
+            <el-table-column 
+               prop="name" 
+               label="Nome" 
+               :width="190"> 
+            </el-table-column>
+            <el-table-column 
+               prop="description"
+               label="Descrição" 
+               :width="270" >
+            </el-table-column>
+            <el-table-column 
+               prop="team" 
+               label="Time"   
+               :formatter="formatList"
+               :width="250">
                <template v-slot="scope">
                   <div v-for="(member, index) in scope.row.team" :key="index">
-                     <div>{{ index + 1 }}) {{ member.name }}</div>
+                     <div>{{ index + 1 }} {{ member.name }}</div>
                   </div>
                </template>
             </el-table-column>
-            <el-table-column prop="startDate" label="Data de início" :formatter="formatDate"
-               :width="150"></el-table-column>
-            <el-table-column label="Ações" align="right">
+            <el-table-column 
+               prop="startDate"
+               label="Data de início"
+               :formatter="formatDate"
+               :width="160">
+            </el-table-column>
+            <el-table-column 
+               label="Ações" 
+               align="right">
                <template v-slot="scope">
                   <div class="actions">
                      <div class="actions-button" v-if="isLeadership || isOnTeam(scope.row)"
-                        @click="handleAddNews(scope.$index, scope.row)" :style="'background: #A8CDE8'">
+                        @click="handleAddNews(scope.$index, scope.row)" :style="'background: #A8CDE8'"
+                        title="Adicionar atualização">
                         <el-icon>
                            <Plus />
                         </el-icon>
                      </div>
                      <div class="actions-button" @click="handleViewNews(scope.$index, scope.row)"
-                        :style="'background: #E8A8CE'">
+                        :style="'background: #E8A8CE'"
+                        title="Atualizações">
                         <el-icon>
                            <List />
                         </el-icon>
                      </div>
                      <div class="actions-button" v-if="isLeadership" @click="handleEditProject(scope.$index, scope.row)"
-                        :style="'background: #4b53c6'">
+                        :style="'background: #4b53c6'"
+                        title="Editar">
                         <el-icon>
                            <Edit />
                         </el-icon>
                      </div>
                      <div class="actions-button" @click="handleViewProject(scope.$index, scope.row)"
-                        :style="'background: #67c23a'">
+                        :style="'background: #67c23a'"
+                        title="Visualizar">
                         <el-icon>
                            <View />
                         </el-icon>
                      </div>
                      <div class="actions-button" v-if="isLeadership"
-                        @click="handleDeleteProject(scope.$index, scope.row)" :style="'background: #e07c72'">
+                        @click="handleDeleteProject(scope.$index, scope.row)" :style="'background: #e07c72'"
+                        title="Excluir">
                         <el-icon>
                            <DeleteFilled />
                         </el-icon>
