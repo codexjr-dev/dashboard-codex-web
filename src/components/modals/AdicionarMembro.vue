@@ -228,7 +228,7 @@ export default {
          immediate: false,
 
          handler(newValue) {
-            if(newValue) {
+            if (newValue) {
                this.validateName();
                this.validateBirth();
                this.validateEntry();
@@ -390,9 +390,9 @@ export default {
             }
          }
       },
-      
+
       validateName() {
-         if(!this.membro.name || this.membro.name.trim().length === 0) {
+         if (!this.membro.name || this.membro.name.trim().length === 0) {
             this.errorMessageName = '*Campo obrigatório';
             this.$emit("setValidName", false);
          } else {
@@ -402,7 +402,7 @@ export default {
       },
 
       validateBirth() {
-         if(!this.membro.birthDate) {
+         if (!this.membro.birthDate) {
             this.errorMessageBirth = '*Campo obrigatório';
             this.$emit("setValidBirth", false);
          } else {
@@ -412,7 +412,7 @@ export default {
       },
 
       validateEntry() {
-         if(!this.membro.entryDate) {
+         if (!this.membro.entryDate) {
             this.errorMessageEntry = '*Campo obrigatório';
             this.$emit("setValidEntry", false);
          } else {
@@ -422,8 +422,8 @@ export default {
       },
 
       validateDepartament() {
-         if(!(['Presidência', 'Gente & Gestão', 'Marketing', 'Negócios', 
-      'Projetos', 'Qualidade'].includes(this.membro.department))) {
+         if (!(['Presidência', 'Gente & Gestão', 'Marketing', 'Negócios',
+            'Projetos', 'Qualidade'].includes(this.membro.department))) {
             this.errorMessageDepartament = '*Campo obrigatório';
             this.$emit("setValidDepartament", false);
          } else {
@@ -433,8 +433,8 @@ export default {
       },
 
       validateRole() {
-         if(!['Presidente','Diretor(a)','Assessor(a)','Conselheiro(a)','Pós-Júnior',
-         'Guardiã(o)','Trainee','Ex-Trainee'].includes(this.membro.role)) {
+         if (!['Presidente', 'Diretor(a)', 'Assessor(a)', 'Conselheiro(a)', 'Pós-Júnior',
+            'Guardiã(o)', 'Trainee', 'Ex-Trainee'].includes(this.membro.role)) {
             this.errorMessageRole = '*Campo obrigatório';
             this.$emit("setValidRole", false);
          } else {
@@ -444,7 +444,7 @@ export default {
       },
 
       validatePasswordEmpty() {
-         if(!this.membro.password || this.membro.password.trim().length === 0) {
+         if (!this.membro.password || this.membro.password.trim().length === 0) {
             this.errorMessagePassword = '*Campo obrigatório';
             this.$emit("setValidPassword", false);
          } else {
@@ -454,7 +454,7 @@ export default {
       },
 
       validateConfirmPassword() {
-         if(!this.membro.confirmPassword || this.membro.confirmPassword.trim().length === 0) {
+         if (!this.membro.confirmPassword || this.membro.confirmPassword.trim().length === 0) {
             this.errorMessage = '*Campo obrigatório';
             this.$emit("setValidConfirm", false);
          } else {
@@ -464,7 +464,7 @@ export default {
       },
 
       validatePhone() {
-         if(!this.membro.phone || this.membro.phone.trim().length === 0) {
+         if (!this.membro.phone || this.membro.phone.trim().length === 0) {
             this.errorMessagePhone = '*Campo obrigatório';
             this.$emit("setValidPhone", false);
          } else {
@@ -476,7 +476,7 @@ export default {
 
    computed: {
       isLeadership() {
-         return ['Presidente', 'Diretor(a)'].includes(localStorage.getItem("@role"))
+         return ['Presidente', 'Diretor(a)', "Guardiã(o)"].includes(localStorage.getItem("@role"))
       },
 
       isToDisable() {
@@ -501,6 +501,7 @@ export default {
 .required-field {
    --el-border-color: red;
 }
+
 .modal-content {
    display: flex;
    gap: 2%;
@@ -519,9 +520,11 @@ export default {
    gap: 2%;
    margin-bottom: 1vh;
 }
+
 .message {
    margin-top: 10px;
 }
+
 .verify {
    color: red;
    margin-top: 2px;
