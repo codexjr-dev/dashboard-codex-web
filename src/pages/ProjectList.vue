@@ -10,7 +10,16 @@
             <el-table-column 
                prop="description"
                label="Descrição" 
-               :width="270" >
+               :width="270"
+               >
+               <template v-slot="scope">
+               <div 
+                  class="description-cell"
+                  style="max-height: 200px; overflow-y: auto; white-space: normal; text-align: justify;
+                  display: flex; justify-content: left; align-items: center;">
+                  {{ scope.row.description }}
+               </div>
+               </template>
             </el-table-column>
             <el-table-column 
                prop="team" 
@@ -31,7 +40,7 @@
             </el-table-column>
             <el-table-column 
                label="Ações" 
-               align="right">
+               aling="right">
                <template v-slot="scope">
                   <div class="actions">
                      <div class="actions-button" v-if="isLeadership || isOnTeam(scope.row)"
