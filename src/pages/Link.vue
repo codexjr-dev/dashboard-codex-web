@@ -11,16 +11,25 @@ div
          )
          el-table-column(
             prop="url",
-            label="URL",
+            label="URL"
          )
+            template(v-slot="scope")
+               div(
+                  class="url-cell"
+                  style="max-width: 200px; max-height: 150px; white-space: normal; overflow-y: auto; word-break: break-all"
+               )
+                  | {{ scope.row.url }}
+
          el-table-column(
             prop="departments",
             label="Departamentos",
             :formatter="formatList"
          )
             template(v-slot="scope")
-               div(v-for="(prop, index) in scope.row.departments", :key="index")
-                  div {{ index + 1 }}) {{ prop }}
+               div(
+                  v-for="(prop, index) in scope.row.departments", :key="index")
+                  div {{ index + 1 }} {{ prop }}
+
          el-table-column(
             prop="tags",
             label="Tags",
@@ -28,10 +37,11 @@ div
          )
             template(v-slot="scope")
                div(v-for="(prop, index) in scope.row.tags", :key="index")
-                  div {{ index + 1 }}) {{ prop }}
+                  div {{ index + 1 }} {{ prop }}
          el-table-column(
             label="Ações"
-            align="right"
+            align="left"
+            display="flex"
          )
             template(
                #default="scope"
